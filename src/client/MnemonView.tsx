@@ -209,39 +209,18 @@ function ProviderMemoryFields(props: {
 type NavEntry = { id: Page; label: MnemonKey; detail: MnemonKey; glyph: string }
 type NavGroup = { aria: MnemonKey; entries: NavEntry[] }
 
-/** 系统 → 三层存储 → 读写工具；组间以分隔线呈现。 */
-const PAGE_NAV: NavGroup[] = [
-  {
-    aria: 'nav.group.system',
-    entries: [
-      { id: 'status', label: 'nav.status', detail: 'nav.status.detail', glyph: '⌘' },
-    ],
-  },
-  {
-    aria: 'nav.group.storage',
-    entries: [
-      { id: 'runtime', label: 'nav.runtime', detail: 'nav.runtime.detail', glyph: '◫' },
-      { id: 'documents', label: 'nav.documents', detail: 'nav.documents.detail', glyph: '▤' },
-      { id: 'overview', label: 'nav.bodies', detail: 'nav.bodies.detail', glyph: '◇' },
-    ],
-  },
-  {
-    aria: 'nav.group.tools',
-    entries: [
-      { id: 'remember', label: 'nav.remember', detail: 'nav.remember.detail', glyph: '+' },
-      { id: 'explore', label: 'nav.search', detail: 'nav.search.detail', glyph: '⌕' },
-      { id: 'entities', label: 'nav.entities', detail: 'nav.entities.detail', glyph: '◎' },
-      { id: 'list', label: 'nav.content', detail: 'nav.content.detail', glyph: '≡' },
-    ],
-  },
+/** PRD-v2.0 四大白话导航：记忆 | 常用小抄 | 项目文档 | 运行状态。Buildin 与 Sidebar 统一收敛为这 4 个一级标签。 */
+const PRIMARY_PAGE_TABS: NavEntry[] = [
+  { id: 'overview', label: 'nav.memory', detail: 'nav.memory.detail', glyph: '◇' },
+  { id: 'runtime', label: 'nav.cheatsheet', detail: 'nav.cheatsheet.detail', glyph: '◫' },
+  { id: 'documents', label: 'nav.projectDocs', detail: 'nav.projectDocs.detail', glyph: '▤' },
+  { id: 'status', label: 'nav.runtimeStatus', detail: 'nav.runtimeStatus.detail', glyph: '⌘' },
 ]
 
-const SIDEBAR_PAGE_TABS: NavEntry[] = [
-  { id: 'status', label: 'nav.status', detail: 'nav.status.detail', glyph: '⌘' },
-  { id: 'runtime', label: 'nav.runtime', detail: 'nav.runtime.detail', glyph: '◫' },
-  { id: 'documents', label: 'nav.documents', detail: 'nav.documents.detail', glyph: '▤' },
-  { id: 'overview', label: 'nav.bodies', detail: 'nav.bodies.detail', glyph: '◇' },
-]
+/** 单组一级导航；explore/list/entities/remember 页面组件全部保留，由记忆页内二级入口与 anchor 收敛可达。 */
+const PAGE_NAV: NavGroup[] = [{ aria: 'nav.aria', entries: PRIMARY_PAGE_TABS }]
+
+const SIDEBAR_PAGE_TABS: NavEntry[] = PRIMARY_PAGE_TABS
 
 const MEMORY_PAGE_TABS: Array<{ id: SidebarMemoryPage; label: MnemonKey }> = [
   { id: 'overview', label: 'nav.overview' },
@@ -401,7 +380,7 @@ function ReadSourcePanel(props: {
   </section>
 }
 
-/** Sidebar mirrors the SSH panel's flat tab model; Buildin keeps the grouped navigation unchanged. */
+/** 4 个一级标签在两种表面统一；记忆页内二级（概览/检索/内容/实体 + 写入）由 MemoryNavigation 呈现。 */
 function WorkspaceNavigation(props: { page: Page; onSelect: (page: Page) => void; activeBodies: number; bodyCount: number; catalogKnown: boolean; activationEnabled: boolean; writeEnabled: boolean }): JSX.Element {
   const t = useT()
   const appearance = useMnemonViewAppearance()
@@ -415,23 +394,26 @@ function WorkspaceNavigation(props: { page: Page; onSelect: (page: Page) => void
           })}
         </div>
         : <nav className={appearanceClass(css.nav, appearance.classes.nav)} aria-label={t('nav.aria')}>
-          {PAGE_NAV.map((group, groupIndex) => <Fragment key={group.aria}><div className={appearanceClass(css.navGroup, appearance.classes.navGroup)} role="group" aria-label={t(group.aria)}>{group.entries.map(item => <button key={item.id} type="button" aria-current={props.page === item.id ? 'page' : undefined} onClick={() => props.onSelect(item.id)}>{appearance.showNavigationGlyphs && <span className={css.navGlyph} aria-hidden="true">{item.glyph}</span>}<span><strong>{t(item.label)}</strong>{appearance.showNavigationDetails && <small>{t(item.detail)}</small>}</span></button>)}</div>{appearance.showNavigationDividers && groupIndex < PAGE_NAV.length - 1 && <span className={css.navGroupDivider} aria-hidden="true" />}</Fragment>)}
+          {PAGE_NAV.map((group, groupIndex) => <Fragment key={group.aria}><div className={appearanceClass(css.navGroup, appearance.classes.navGroup)} role="group" aria-label={t(group.aria)}>{group.entries.map(item => {
+            const active = item.id === 'overview' ? isMemoryPage(props.page) : props.page === item.id
+            return <button key={item.id} type="button" aria-current={active ? 'page' : undefined} onClick={() => props.onSelect(item.id)}>{appearance.showNavigationGlyphs && <span className={css.navGlyph} aria-hidden="true">{item.glyph}</span>}<span><strong>{t(item.label)}</strong>{appearance.showNavigationDetails && <small>{t(item.detail)}</small>}</span></button>
+          })}</div>{appearance.showNavigationDividers && groupIndex < PAGE_NAV.length - 1 && <span className={css.navGroupDivider} aria-hidden="true" />}</Fragment>)}
         </nav>}
       {appearance.showSpaceSummary && <div className={css.spaceSummary}><span>{t('sidebar.activeSpaces')}</span><code>{props.catalogKnown ? `${props.activeBodies} / ${props.bodyCount}` : '— / —'}</code><small>{props.writeEnabled ? t('common.agentSupervised') : props.activationEnabled ? t('common.activationOnly') : t('common.readOnly')}</small></div>}
     </div>
   )
 }
 
-/** Memory tools become a focused second-level tab set on the Sidebar surface. */
+/** 记忆页内二级入口：概览/检索/内容/实体 + 写入/策略；Buildin 与 Sidebar 一致。 */
 function MemoryNavigation(props: { page: Page; activationEnabled: boolean; writeEnabled: boolean; onSelect: (page: SidebarMemoryPage) => void; onRemember: () => void; onStrategy: () => void }): JSX.Element | null {
   const t = useT()
   const appearance = useMnemonViewAppearance()
-  if (appearance.surface !== 'sidebar' || !isMemoryPage(props.page)) return null
+  if (!isMemoryPage(props.page)) return null
   return (
-    <section className={appearance.classes.memoryWorkspace}>
-      <PageHeader title={t('nav.bodies')} description={t('overview.description')} meta={props.writeEnabled ? t('common.agentSupervised') : props.activationEnabled ? t('common.activationOnly') : t('common.readOnly')} action={<div className={css.memoryHeaderActions}><button type="button" className={appearanceClass(css.primaryButton, appearance.classes.memoryWriteButton)} disabled={!props.writeEnabled} onClick={props.onRemember}>{t('nav.rememberAction')}</button><button type="button" className={css.secondaryButton} onClick={props.onStrategy}>{t('strategy.action')}</button></div>} />
-      <div className={appearance.classes.memoryNavigation}>
-        <div className={appearance.classes.memoryTabs} role="tablist" aria-label={t('nav.memory.aria')}>
+    <section className={appearanceClass(css.memoryWorkspace, appearance.classes.memoryWorkspace)}>
+      <PageHeader title={t('nav.memory')} description={t('overview.description')} meta={props.writeEnabled ? t('common.agentSupervised') : props.activationEnabled ? t('common.activationOnly') : t('common.readOnly')} action={<div className={css.memoryHeaderActions}><button type="button" className={appearanceClass(css.primaryButton, appearance.classes.memoryWriteButton)} disabled={!props.writeEnabled} onClick={props.onRemember}>{t('nav.write')}</button><button type="button" className={css.secondaryButton} onClick={props.onStrategy}>{t('strategy.action')}</button></div>} />
+      <div className={appearanceClass(css.memoryNavigation, appearance.classes.memoryNavigation)}>
+        <div className={appearanceClass(css.memoryTabs, appearance.classes.memoryTabs)} role="tablist" aria-label={t('nav.memory.aria')}>
           {MEMORY_PAGE_TABS.map(item => {
             const active = props.page === item.id
             return <button key={item.id} type="button" role="tab" aria-selected={active} data-active={active ? '' : undefined} onClick={() => props.onSelect(item.id)}>{t(item.label)}</button>
@@ -998,7 +980,7 @@ function MemoryGraph(props: { graph: MemoryGraphSnapshot; selectedId?: string | 
   )
 }
 
-function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClient; revision: number; activationEnabled: boolean; writeEnabled: boolean; agentAvailable: boolean; fallbackBodies: MemoryBodyView[]; fallbackDirectory: string | undefined; catalogKnown: boolean; onMutate: () => void; onAgentRefresh: () => void; onBodyReconnect: (body: MemoryBodyView) => void; onBodyMetadata: (updates: readonly MemoryBodyMetadataUpdate[]) => void; onExplore: (query: string) => void }): JSX.Element {
+function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClient; revision: number; activationEnabled: boolean; writeEnabled: boolean; agentAvailable: boolean; fallbackBodies: MemoryBodyView[]; fallbackDirectory: string | undefined; catalogKnown: boolean; searchSeed: string; onMutate: () => void; onAgentRefresh: () => void; onBodyReconnect: (body: MemoryBodyView) => void; onBodyMetadata: (updates: readonly MemoryBodyMetadataUpdate[]) => void; onExplore: (query: string) => void; onForget: (insight: Insight) => Promise<void> }): JSX.Element {
   const t = useT()
   const locale = useLocale()
   const appearance = useMnemonViewAppearance()
@@ -1032,6 +1014,15 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
   const [metadataTasks, setMetadataTasks] = useState<Record<string, { status: 'running' | 'success' | 'error'; error?: string }>>({})
   const [lastFullSyncAt, setLastFullSyncAt] = useState<number | null>(null)
   const [syncClock, setSyncClock] = useState(() => Date.now())
+  // PRD-v2.0 记忆页：快速检索（ExplorePage 简化版，默认智能模式）+ 关系图折叠区。
+  const [hubQuery, setHubQuery] = useState(props.searchSeed)
+  const [hubResults, setHubResults] = useState<Insight[]>([])
+  const [hubSources, setHubSources] = useState<MemoryReadSource[]>([])
+  const [hubSearched, setHubSearched] = useState(false)
+  const [hubSearching, setHubSearching] = useState(false)
+  const [hubError, setHubError] = useState<string | null>(null)
+  const [graphOpen, setGraphOpen] = useState(false)
+  const hubInputRef = useRef<HTMLInputElement | null>(null)
   const loadRequest = useRef(0)
   const initialSyncStarted = useRef(false)
   const compatibilityRetryStarted = useRef(false)
@@ -1103,6 +1094,32 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
     const timer = window.setInterval(() => setSyncClock(Date.now()), 1_000)
     return () => window.clearInterval(timer)
   }, [])
+
+  /** 对话内 explore anchor 落到记忆页快速检索框：预填查询并聚焦。 */
+  useEffect(() => {
+    if (props.searchSeed === '' || props.searchSeed === hubQuery) return
+    setHubQuery(props.searchSeed)
+    if (typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(() => hubInputRef.current?.focus())
+  }, [props.searchSeed])
+  const runHubSearch = async (event: FormEvent) => {
+    event.preventDefault()
+    const query = hubQuery.trim()
+    if (query === '') return
+    setHubSearching(true); setHubSearched(true); setHubError(null)
+    try {
+      const response = await props.client.search({ query, mode: 'smart', limit: 10 })
+      setHubResults(response.results)
+      setHubSources(response.sources ?? [])
+    } catch (reason) {
+      setHubError(message(reason)); setHubResults([]); setHubSources([])
+    } finally {
+      setHubSearching(false)
+    }
+  }
+  const hubForget = async (insight: Insight) => {
+    await props.onForget(insight)
+    setHubResults(items => items.filter(item => insightKey(item) !== insightKey(insight)))
+  }
 
   const toggle = async (body: MemoryBodyView) => {
     setChanging(body.id); setError(null)
@@ -1285,7 +1302,9 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
         <label>{t('overview.createDescription')}<textarea aria-label={t('overview.createDescription')} value={bodyDescription} onChange={event => setBodyDescription(event.target.value)} placeholder={t('overview.createDescriptionPlaceholder')} rows={3} maxLength={1000} required /></label>
       </div>
     </section>
-    <section className={css.createSection}>
+    <details className={css.bodyCreateAdvanced}>
+      <summary><span><strong>{t('memory.createAdvanced')}</strong><small>{t('memory.createAdvancedHint')}</small></span><span aria-hidden="true">+</span></summary>
+      <section className={css.createSection}>
       <div className={css.createSectionHeading}><span>02</span><div><strong>{t('overview.createPlacementTitle')}</strong><small>{t('overview.createPlacementHint')}</small></div></div>
       <fieldset className={css.providerChoice}><legend>{t('overview.providerLabel')}</legend>{providers.map(provider => {
         const serviceMissing = provider.id !== 'mnemon-native' && provider.serviceConfigured === false
@@ -1297,7 +1316,8 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
         </label>
       })}</fieldset>
       {selectedProvider !== undefined && selectedProvider.id !== 'mnemon-native' && <ProviderMemoryFields provider={selectedProvider} connection={providerDrafts[selectedProvider.id] ?? {}} onChange={(key, value) => updateProviderDraft(selectedProvider.id, key, value)} />}
-    </section>
+      </section>
+    </details>
     <div className={appearanceClass(css.bodyEditActions, css.bodyCreateActions)}><button type="button" className={css.ghostButton} disabled={creating} onClick={() => setCreatingBodyOpen(false)}>{t('common.cancel')}</button><button type="submit" className={css.primaryButton} disabled={creating || bodyName.trim() === '' || bodyDescription.trim() === '' || !providerDraftComplete(selectedProvider, providerDrafts[bodyProviderId])}>{creating ? t('overview.creating') : t('overview.createAction')}</button></div>
   </form>
   const bodyToggle = (body: MemoryBodyView) => <button type="button" className={css.bodySwitch} role="switch" aria-checked={body.active} aria-label={t('overview.toggleAria', { name: body.name })} disabled={!props.activationEnabled || changing === body.id || deletingBody === body.id} onClick={() => void toggle(body)}><span className={css.bodySwitchTrack} aria-hidden="true"><i /></span><span>{changing === body.id ? t('overview.toggling') : body.active ? t('common.active') : t('common.inactive')}</span></button>
@@ -1308,6 +1328,24 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
       <PageHeader title={appearance.surface === 'sidebar' ? t('nav.overview') : t('overview.title')} description={t(appearance.surface === 'sidebar' ? 'overview.pageDescription' : 'overview.description')} meta={fullSyncAge} {...(loading ? { loadingLabel: catalogLoading ? t('overview.directoryLoading') : graphLoading ? t('overview.snapshotLoading') : t('overview.healthLoading') } : {})}
         action={<button type="button" className={css.secondaryButton} disabled={loading} onClick={() => void load()}>{loading ? t('overview.syncing') : t('overview.syncNow')}</button>} />
       {error !== null && <div className={css.inlineError} role="alert">{error}</div>}
+      <form className={css.searchBar} onSubmit={event => void runHubSearch(event)}>
+        <div className={css.queryField}><span aria-hidden="true">⌕</span><input ref={hubInputRef} value={hubQuery} onChange={event => setHubQuery(event.target.value)} placeholder={t('search.placeholder')} aria-label={t('search.queryAria')} /><kbd>↵</kbd></div>
+        <div className={css.searchControls}>
+          <div className={css.searchActions}>
+            <button type="button" className={css.secondaryButton} disabled={hubSearching || hubQuery.trim() === ''} onClick={() => props.onExplore(hubQuery)}>{t('memory.searchAdvanced')}</button>
+            <button type="submit" className={css.primaryButton} disabled={hubSearching || hubQuery.trim() === ''}>{hubSearching ? t('search.searching') : t('search.action')}</button>
+          </div>
+        </div>
+      </form>
+      {hubError !== null && <div className={css.inlineError} role="alert">{hubError}</div>}
+      {hubSearched && !hubSearching && hubError === null && hubResults.length === 0 && <EmptyState glyph="0" title={t('search.emptyTitle')}>{t('search.emptyText')}</EmptyState>}
+      {hubResults.length > 0 && (
+        <section className={css.asyncResults} aria-label={t('search.results')}>
+          <div className={css.sectionHeading}><div><h3>{t('search.results')}</h3></div><strong>{hubResults.length}</strong></div>
+          <div className={css.memoryList}>{hubResults.map(insight => <InsightCard key={insightKey(insight)} insight={insight} writeEnabled={props.writeEnabled} onForget={hubForget} />)}</div>
+          <ReadSourcePanel title={t('search.sourcesTitle')} sources={hubSources} />
+        </section>
+      )}
       <section className={css.bodyDirectory} aria-label={t('overview.directory')}>
         <div className={css.bodyDirectoryHeader}>
           <div><h3>{t('overview.directory')}</h3><p>{t('overview.directory.description')}</p><code className={css.bodyDirectoryPath}>{catalogUnavailable ? t('overview.directory.unsynced') : catalog?.directory || props.fallbackDirectory || t('overview.directory.waiting')}</code></div>
@@ -1351,7 +1389,12 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
       </div></SidebarModal>}
       {appearance.surface === 'sidebar' && editingBodyView !== undefined && <SidebarModal title={t('overview.editBodyAria', { name: editingBodyView.name })} description={editingBodyView.id} busy={savingBody === editingBodyView.id} onClose={() => setEditingBody(null)}>{bodyEditForm(editingBodyView)}</SidebarModal>}
       {appearance.surface === 'sidebar' && deletingBodyView !== undefined && <SidebarModal title={t(deletingBodyView.provider.id !== 'mnemon-native' ? 'overview.disconnectTitle' : 'overview.deleteTitle', { name: deletingBodyView.name })} description={deletingBodyView.id} busy={deletingBody === deletingBodyView.id} onClose={() => setConfirmingDeleteBody(null)}><div className={css.bodyDeleteConfirm}><p>{t(deletingBodyView.provider.id !== 'mnemon-native' ? 'overview.disconnectWarning' : 'overview.deleteWarning', { provider: deletingBodyView.provider.label })}</p><div className={css.bodyDeleteSummary}><strong>{deletingBodyView.name}</strong><span>{deletingBodyView.provider.label} · {deletingBodyView.provider.location || t('common.memories', { count: deletingBodyView.stats?.totalInsights ?? 0 })}</span></div><div className={css.bodyEditActions}><button type="button" data-autofocus className={css.ghostButton} disabled={deletingBody === deletingBodyView.id} onClick={() => setConfirmingDeleteBody(null)}>{t('common.cancel')}</button><button type="button" className={css.dangerSolidButton} title={canDeleteBody(deletingBodyView) ? undefined : t('overview.lastStoreDeleteHint')} disabled={deletingBody === deletingBodyView.id || !canDeleteBody(deletingBodyView)} onClick={() => void deleteBody(deletingBodyView)}>{deletingBody === deletingBodyView.id ? t('overview.deletingBody') : t(deletingBodyView.provider.id !== 'mnemon-native' ? 'overview.disconnectAction' : 'overview.deleteAction')}</button></div></div></SidebarModal>}
-      {!catalogUnavailable && graph !== null && graph.nodes.length > 0 ? (
+      <div className={css.graphToggleBar}>
+        <span>{t('memory.graphHint')}{graph !== null && ` · ${t('overview.graphComposition', { spaces: graphSpaces, memories: graphMemories, entities: graphEntities })}`}</span>
+        <button type="button" className={css.secondaryButton} aria-expanded={graphOpen} onClick={() => setGraphOpen(value => !value)}>{graphOpen ? t('memory.hideGraph') : t('memory.viewGraph')}</button>
+      </div>
+      {graphOpen && (
+      !catalogUnavailable && graph !== null && graph.nodes.length > 0 ? (
         <div className={css.graphLayout}>
           <section className={css.graphPanel}>
             <div className={css.graphToolbar}>
@@ -1389,6 +1432,7 @@ function OverviewPage(props: { client: MnemonClient; metadataClient: MnemonClien
             : <EmptyState glyph="◇" title={t(onlyQueryOrUnsupported ? 'overview.noVisualTitle' : 'overview.noContentTitle')}>{t(onlyQueryOrUnsupported ? 'overview.noVisualText' : 'overview.noContentText')}</EmptyState>
       ) : (
         <div className={css.asyncPlaceholder}><span>{t('overview.loading')}</span></div>
+      )
       )}
       {preview !== null && <ContentPreview node={preview} kind={graphKindLabel(t, preview)} onClose={() => setPreview(null)} />}
     </div>
@@ -1554,6 +1598,11 @@ function EntitiesPage(props: { client: MnemonClient; revision: number; writeEnab
   )
 }
 
+/** 常用小抄（原运行时页）：USER.md → 关于我，MEMORY.md → 关于项目。 */
+function runtimeTargetLabel(t: MnemonTranslate, target: RuntimeMemoryTarget): string {
+  return target === 'user' ? t('cheatsheet.me') : t('cheatsheet.project')
+}
+
 function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabled: boolean; onMutate: () => void }): JSX.Element {
   const t = useT()
   const locale = useLocale()
@@ -1588,10 +1637,10 @@ function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabl
     setNotice(null); setError(null)
     const result = await props.client.mutateRuntimeMemory(request)
     setNotice(result.maintenance === undefined
-      ? t(`runtime.result.${request.action}` as MnemonKey, { target: t(`runtime.target.${request.target}` as MnemonKey), count: result.entryCount })
+      ? t(`runtime.result.${request.action}` as MnemonKey, { target: runtimeTargetLabel(t, request.target), count: result.entryCount })
       : result.maintenance.kind === 'local-compaction'
-        ? t('runtime.result.localCompaction', { target: t(`runtime.target.${request.target}` as MnemonKey), count: result.entryCount })
-        : t('runtime.result.maintenance', { target: t(`runtime.target.${request.target}` as MnemonKey), count: result.entryCount, spaces: result.maintenance.memoryBodyIds.join(', ') || '—' }))
+        ? t('runtime.result.localCompaction', { target: runtimeTargetLabel(t, request.target), count: result.entryCount })
+        : t('runtime.result.maintenance', { target: runtimeTargetLabel(t, request.target), count: result.entryCount, spaces: result.maintenance.memoryBodyIds.join(', ') || '—' }))
     await load()
     props.onMutate()
   }
@@ -1651,9 +1700,9 @@ function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabl
     const entries = snapshot?.entries.filter(entry => entry.target === value) ?? []
     const percentage = view === undefined || view.limit === 0 ? 0 : Math.min(100, Math.round(view.used / view.limit * 100))
     return (
-      <section className={css.runtimeTarget} aria-label={t(`runtime.target.${value}` as MnemonKey)}>
+      <section className={css.runtimeTarget} aria-label={runtimeTargetLabel(t, value)}>
         <header className={css.runtimeTargetHeader}>
-          <div><span>{value === 'user' ? 'USER.md' : 'MEMORY.md'}</span><h3>{t(`runtime.target.${value}` as MnemonKey)}</h3></div>
+          <div><span>{value === 'user' ? 'USER.md' : 'MEMORY.md'}</span><h3>{runtimeTargetLabel(t, value)}</h3></div>
           <strong>{view?.entryCount ?? 0}</strong>
         </header>
         <div className={css.capacityLine}><div><i style={{ width: `${percentage}%` }} /></div><span>{view === undefined ? '—' : `${humanBytes(view.used)} / ${humanBytes(view.limit)}`}</span></div>
@@ -1669,7 +1718,7 @@ function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabl
   const targetSummary = (value: RuntimeMemoryTarget) => {
     const view = snapshot?.targets[value]
     const percentage = view === undefined || view.limit === 0 ? 0 : Math.min(100, Math.round(view.used / view.limit * 100))
-    return <section className={css.runtimeSummaryCard} aria-label={t(`runtime.target.${value}` as MnemonKey)}><header className={css.runtimeTargetHeader}><div><span>{value === 'user' ? 'USER.md' : 'MEMORY.md'}</span><h3>{t(`runtime.target.${value}` as MnemonKey)}</h3></div><strong>{view?.entryCount ?? 0}</strong></header><div className={css.capacityLine}><div><i style={{ width: `${percentage}%` }} /></div><span>{view === undefined ? '—' : `${humanBytes(view.used)} / ${humanBytes(view.limit)}`}</span></div><p className={css.runtimeTargetDescription}>{t(`runtime.target.${value}.description` as MnemonKey)}</p></section>
+    return <section className={css.runtimeSummaryCard} aria-label={runtimeTargetLabel(t, value)}><header className={css.runtimeTargetHeader}><div><span>{value === 'user' ? 'USER.md' : 'MEMORY.md'}</span><h3>{runtimeTargetLabel(t, value)}</h3></div><strong>{view?.entryCount ?? 0}</strong></header><div className={css.capacityLine}><div><i style={{ width: `${percentage}%` }} /></div><span>{view === undefined ? '—' : `${humanBytes(view.used)} / ${humanBytes(view.limit)}`}</span></div><p className={css.runtimeTargetDescription}>{t(`runtime.target.${value}.description` as MnemonKey)}</p></section>
   }
   const normalizedQuery = filterQuery.trim().toLocaleLowerCase()
   const filteredEntries = (snapshot?.entries ?? []).filter(entry => (filterTarget === 'all' || entry.target === filterTarget) && (normalizedQuery === '' || entry.content.toLocaleLowerCase().includes(normalizedQuery)))
@@ -1682,7 +1731,7 @@ function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabl
   const composer = <form className={css.runtimeComposer} onSubmit={event => void add(event)}>
     <div className={css.runtimeComposerHeading}><div><h3>{t('runtime.addTitle')}</h3><p>{t('runtime.addDescription')}</p></div><span>{t('runtime.hotContext')}</span></div>
     <textarea aria-label={t('runtime.content')} value={content} onChange={event => setContent(event.target.value)} rows={3} placeholder={t('runtime.placeholder')} />
-    <div className={css.runtimeComposerActions}><label>{t('runtime.target')}<select value={target} onChange={event => setTarget(event.target.value as RuntimeMemoryTarget)}><option value="memory">{t('runtime.target.memory')}</option><option value="user">{t('runtime.target.user')}</option></select></label><label>{t('runtime.importance')}<select value={importance} onChange={event => setImportance(event.target.value as RuntimeMemoryImportance)}><option value="critical">{t('runtime.importance.critical')}</option><option value="normal">{t('runtime.importance.normal')}</option><option value="low">{t('runtime.importance.low')}</option></select></label>{appearance.surface === 'sidebar' && <button type="button" className={css.ghostButton} disabled={saving} onClick={closeComposer}>{t('common.cancel')}</button>}<button type="submit" className={css.primaryButton} disabled={saving || content.trim() === ''}>{saving ? t('runtime.saving') : t('runtime.addAction')}</button></div>
+    <div className={css.runtimeComposerActions}><label>{t('runtime.target')}<select value={target} onChange={event => setTarget(event.target.value as RuntimeMemoryTarget)}><option value="memory">{runtimeTargetLabel(t, 'memory')}</option><option value="user">{runtimeTargetLabel(t, 'user')}</option></select></label><label>{t('runtime.importance')}<select value={importance} onChange={event => setImportance(event.target.value as RuntimeMemoryImportance)}><option value="critical">{t('runtime.importance.critical')}</option><option value="normal">{t('runtime.importance.normal')}</option><option value="low">{t('runtime.importance.low')}</option></select></label>{appearance.surface === 'sidebar' && <button type="button" className={css.ghostButton} disabled={saving} onClick={closeComposer}>{t('common.cancel')}</button>}<button type="submit" className={css.primaryButton} disabled={saving || content.trim() === ''}>{saving ? t('runtime.saving') : t('runtime.addAction')}</button></div>
   </form>
   const editingEntry = editing === null ? undefined : snapshot?.entries.find(entry => entryKey(entry) === editing)
   const removingEntry = removing === null ? undefined : snapshot?.entries.find(entry => entryKey(entry) === removing)
@@ -1703,7 +1752,7 @@ function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabl
         <div className={css.runtimeSummaryGrid}>{targetSummary('user')}{targetSummary('memory')}</div>
         <section className={css.runtimeBrowser} aria-label={t('runtime.entriesAria')}>
           <div className={css.runtimeBrowserToolbar}>
-            <div className={css.runtimeScopeFilter} role="group" aria-label={t('runtime.scopeAria')}><button type="button" data-active={filterTarget === 'all' || undefined} onClick={() => setFilterTarget('all')}>{t('runtime.scopeAll')} <b>{snapshot?.entries.length ?? 0}</b></button><button type="button" data-active={filterTarget === 'user' || undefined} onClick={() => setFilterTarget('user')}>{t('runtime.target.user')} <b>{snapshot?.targets.user.entryCount ?? 0}</b></button><button type="button" data-active={filterTarget === 'memory' || undefined} onClick={() => setFilterTarget('memory')}>{t('runtime.target.memory')} <b>{snapshot?.targets.memory.entryCount ?? 0}</b></button></div>
+            <div className={css.runtimeScopeFilter} role="group" aria-label={t('runtime.scopeAria')}><button type="button" data-active={filterTarget === 'all' || undefined} onClick={() => setFilterTarget('all')}>{t('runtime.scopeAll')} <b>{snapshot?.entries.length ?? 0}</b></button><button type="button" data-active={filterTarget === 'user' || undefined} onClick={() => setFilterTarget('user')}>{runtimeTargetLabel(t, 'user')} <b>{snapshot?.targets.user.entryCount ?? 0}</b></button><button type="button" data-active={filterTarget === 'memory' || undefined} onClick={() => setFilterTarget('memory')}>{runtimeTargetLabel(t, 'memory')} <b>{snapshot?.targets.memory.entryCount ?? 0}</b></button></div>
             <div className={css.runtimeFilterQuery}><span aria-hidden="true">⌕</span><input aria-label={t('runtime.filterAria')} value={filterQuery} onChange={event => setFilterQuery(event.target.value)} placeholder={t('runtime.filterPlaceholder')} /></div>
           </div>
           <div className={css.runtimeUnifiedList}>{visibleEntries.map(entry => runtimeEntry(entry, true))}{!loading && filteredEntries.length === 0 && <div className={css.runtimeEmpty}><span>○</span><p>{t('runtime.noMatch')}</p></div>}</div>
@@ -1712,8 +1761,8 @@ function RuntimePage(props: { client: MnemonClient; revision: number; writeEnabl
       </>}
       <p className={css.runtimeFootnote}>{t('runtime.footnote')}</p>
       {appearance.surface === 'sidebar' && adding && <SidebarModal title={t('runtime.addTitle')} description={t('runtime.addDescription')} busy={saving} onClose={closeComposer}>{composer}</SidebarModal>}
-      {appearance.surface === 'sidebar' && editingEntry !== undefined && <SidebarModal title={t('runtime.editContent')} description={t(`runtime.target.${editingEntry.target}` as MnemonKey)} busy={saving} onClose={() => setEditing(null)}>{editForm}</SidebarModal>}
-      {appearance.surface === 'sidebar' && removingEntry !== undefined && <SidebarModal title={t('runtime.removeTitle')} description={t(`runtime.target.${removingEntry.target}` as MnemonKey)} busy={saving} onClose={() => setRemoving(null)}><div className={css.bodyDeleteConfirm}><p>{t('runtime.removeWarning')}</p><div className={css.bodyDeleteSummary}><p className={css.bodyDeleteContent}>{removingEntry.content}</p><span>{t(`runtime.importance.${removingEntry.importance}` as MnemonKey)}</span></div><div className={css.bodyEditActions}><button type="button" data-autofocus className={css.ghostButton} disabled={saving} onClick={() => setRemoving(null)}>{t('common.cancel')}</button><button type="button" className={css.dangerSolidButton} disabled={saving} onClick={() => void remove(removingEntry)}>{t('runtime.removeAction')}</button></div></div></SidebarModal>}
+      {appearance.surface === 'sidebar' && editingEntry !== undefined && <SidebarModal title={t('runtime.editContent')} description={runtimeTargetLabel(t, editingEntry.target)} busy={saving} onClose={() => setEditing(null)}>{editForm}</SidebarModal>}
+      {appearance.surface === 'sidebar' && removingEntry !== undefined && <SidebarModal title={t('runtime.removeTitle')} description={runtimeTargetLabel(t, removingEntry.target)} busy={saving} onClose={() => setRemoving(null)}><div className={css.bodyDeleteConfirm}><p>{t('runtime.removeWarning')}</p><div className={css.bodyDeleteSummary}><p className={css.bodyDeleteContent}>{removingEntry.content}</p><span>{t(`runtime.importance.${removingEntry.importance}` as MnemonKey)}</span></div><div className={css.bodyEditActions}><button type="button" data-autofocus className={css.ghostButton} disabled={saving} onClick={() => setRemoving(null)}>{t('common.cancel')}</button><button type="button" className={css.dangerSolidButton} disabled={saving} onClick={() => void remove(removingEntry)}>{t('runtime.removeAction')}</button></div></div></SidebarModal>}
     </div>
   )
 }
@@ -2360,16 +2409,15 @@ function MnemonWorkspace({ connection, settingsScope, sessionId, workspaceId, wo
   const clientContextKey = `${sessionId ?? ''}\u0000${workspaceId ?? ''}`
   const viewContextKey = `${clientContextKey}\u0000${settingsSnapshot.revision ?? 'loading'}`
   const [page, setPage] = useState<Page>('status')
-  const lastMemoryPage = useRef<SidebarMemoryPage>('overview')
   const canvasRef = useRef<HTMLElement | null>(null)
 
   const selectPage = useCallback((next: Page) => {
-    if (isMemoryPage(next)) lastMemoryPage.current = next
     setPage(next)
   }, [])
   const selectPrimaryPage = useCallback((next: Page) => {
-    selectPage(appearance.surface === 'sidebar' && next === 'overview' ? lastMemoryPage.current : next)
-  }, [appearance.surface, selectPage])
+    // 4 个一级标签直接打开对应页面；记忆页内二级由 MemoryNavigation 管理。
+    selectPage(next)
+  }, [selectPage])
 
   /** Pages share one plugin-owned scroll container; never mutate DSH ancestor scrollports. */
   const resetViewportScroll = useCallback(() => {
@@ -2414,14 +2462,15 @@ function MnemonWorkspace({ connection, settingsScope, sessionId, workspaceId, wo
   const applyAnchor = useCallback((anchor: MnemonAnchor) => {
     if (anchor.page === 'remember' && appearance.surface === 'sidebar') {
       openRemember(anchor.seed ?? '')
-      selectPage(lastMemoryPage.current)
+      selectPage('overview')
       return
     }
     if (anchor.seed !== undefined && anchor.seed !== '') {
       if (anchor.page === 'explore') setSearchSeed(anchor.seed)
       if (anchor.page === 'remember') setRememberSeed(anchor.seed)
     }
-    selectPage(anchor.page)
+    // 四大白话导航下 explore 收敛进记忆页的快速检索框（预填 seed）；其余 anchor 目标页直接可达。
+    selectPage(anchor.page === 'explore' ? 'overview' : anchor.page)
   }, [appearance.surface, openRemember, selectPage])
   useEffect(() => {
     const held = consumeMnemonAnchor(sessionId)
@@ -2538,9 +2587,9 @@ function MnemonWorkspace({ connection, settingsScope, sessionId, workspaceId, wo
       {appearance.surface === 'buildin' && workspaceDiverged && <div className={css.workspaceMismatch} role="status"><div><strong>{t('workspace.mismatchTitle')}</strong><span>{t('workspace.mismatchDescription')}</span><div><code>{t('workspace.selectedRoot', { root: workspaceContext.selectedRoot })}</code><code>{t('workspace.effectiveRoot', { root: workspaceContext.effectiveRoot })}</code></div></div>{canAlignWorkspace && <button type="button" className={css.secondaryButton} onClick={workspaceSelection.onAlign}>{t('workspace.align')}</button>}</div>}
       <div className={css.workspace}>
         <WorkspaceNavigation page={page} onSelect={selectPrimaryPage} activeBodies={activeBodies} bodyCount={memoryBodies.length} catalogKnown={catalogKnown} activationEnabled={activationEnabled} writeEnabled={writeEnabled} />
-        <MemoryNavigation page={page} activationEnabled={activationEnabled} writeEnabled={writeEnabled} onSelect={selectPage} onRemember={() => openRemember()} onStrategy={() => setStrategyOpen(true)} />
+        <MemoryNavigation page={page} activationEnabled={activationEnabled} writeEnabled={writeEnabled} onSelect={selectPage} onRemember={() => (appearance.surface === 'sidebar' ? openRemember() : selectPage('remember'))} onStrategy={() => setStrategyOpen(true)} />
         <section key={viewContextKey} className={appearanceClass(css.canvas, appearance.classes.canvas)} ref={canvasRef} data-testid="mnemon-canvas" data-lock-page-header={!isMemoryPage(page) ? '' : undefined}>
-          {page === 'overview' && <OverviewPage client={client} metadataClient={taskClient} revision={revision} activationEnabled={activationEnabled} writeEnabled={writeEnabled} agentAvailable={taskAgentAvailable} fallbackBodies={memoryBodies} fallbackDirectory={status?.memoryBodyDirectory} catalogKnown={catalogKnown} onMutate={mutate} onAgentRefresh={() => void loadStatus()} onBodyReconnect={bodyReconnected} onBodyMetadata={bodyMetadataUpdated} onExplore={explore} />}
+          {page === 'overview' && <OverviewPage client={client} metadataClient={taskClient} revision={revision} activationEnabled={activationEnabled} writeEnabled={writeEnabled} agentAvailable={taskAgentAvailable} fallbackBodies={memoryBodies} fallbackDirectory={status?.memoryBodyDirectory} catalogKnown={catalogKnown} searchSeed={searchSeed} onMutate={mutate} onAgentRefresh={() => void loadStatus()} onBodyReconnect={bodyReconnected} onBodyMetadata={bodyMetadataUpdated} onExplore={explore} onForget={forget} />}
           {page === 'runtime' && <RuntimePage client={client} revision={revision} writeEnabled={writeEnabled} onMutate={mutate} />}
           {page === 'documents' && <DocumentsPage client={client} revision={revision} writeEnabled={writeEnabled} {...(sessionId === undefined ? {} : { sessionId })} onMutate={mutate} />}
           {page === 'explore' && <ExplorePage client={client} agentClient={taskClient} agentAvailable={taskAgentAvailable} status={status} seed={searchSeed} writeEnabled={writeEnabled} onForget={forget} />}

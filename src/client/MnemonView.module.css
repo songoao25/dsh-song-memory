@@ -129,6 +129,28 @@
 .pageHeaderMeta > code { padding: 6px 8px; border: 1px solid var(--mn-line); border-radius: 7px; color: var(--mn-faint); background: var(--mn-layer-1); font: 600 9px/1 var(--mn-code); letter-spacing: .06em; }
 .memoryHeaderActions { display: flex; align-items: center; gap: 7px; }
 .memoryHeaderActions > button { white-space: nowrap; }
+
+/* PRD-v2.0 记忆页内二级（Buildin 基础样式；Sidebar 由 MnemonSidebarView.module.css 覆盖）。 */
+.memoryWorkspace { flex: 0 0 auto; padding: 12px 16px 0; border-bottom: 1px solid var(--mn-line); background: var(--mn-layer-1); }
+.memoryWorkspace > [class*='pageHeader'] { margin-bottom: 8px; }
+.memoryNavigation { display: flex; min-width: 0; flex: 0 0 auto; align-items: flex-end; gap: 12px; padding: 0; }
+.memoryTabs { display: flex; min-width: 0; flex: 1; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.memoryTabs::-webkit-scrollbar { display: none; }
+.memoryTabs button {
+  min-width: max-content;
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 6px 6px 0 0;
+  color: var(--mn-muted);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.memoryTabs button:hover { background: var(--mn-hover); }
+.memoryTabs button[data-active] { border-bottom-color: var(--mn-accent); color: var(--mn-text); font-weight: 600; }
+.memoryWriteButton { flex: none; }
 .pageSpinner { display: grid; width: 24px; height: 24px; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in srgb, var(--mn-accent) 18%, var(--mn-line)); border-radius: 7px; color: var(--mn-accent); background: var(--mn-layer-1); }
 .pageSpinner > i { width: 11px; height: 11px; border: 1.5px solid color-mix(in srgb, currentColor 24%, transparent); border-top-color: currentColor; border-radius: 50%; animation: mnemon-spin .72s linear infinite; }
 
@@ -355,6 +377,24 @@ button.readSourceCard:hover { border-color: color-mix(in srgb, var(--mn-provider
 .bodyCreate form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 9px; }
 .bodyCreate input { min-width: 0; height: 34px; border: 1px solid var(--mn-line); border-radius: 8px; outline: 0; padding: 0 9px; background: var(--mn-input); }
 .bodyCreate input:focus { border-color: var(--mn-accent); }
+
+/* PRD-v2.0 FR-4：创建表单默认只填名字+说明，Provider/策略/高级字段折叠进“高级”。 */
+.bodyCreateAdvanced { margin-top: 10px; overflow: hidden; border: 1px solid var(--mn-line); border-radius: 10px; background: color-mix(in srgb, var(--mn-layer-2) 30%, var(--mn-layer-1)); }
+.bodyCreateAdvanced summary { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; cursor: pointer; list-style: none; }
+.bodyCreateAdvanced summary::-webkit-details-marker { display: none; }
+.bodyCreateAdvanced summary > span:first-child { display: grid; gap: 2px; }
+.bodyCreateAdvanced summary strong { font-size: 12px; }
+.bodyCreateAdvanced summary small { color: var(--mn-faint); font-size: 9.5px; }
+.bodyCreateAdvanced summary > span:last-child { color: var(--mn-accent); font: 11px var(--mn-code); }
+.bodyCreateAdvanced[open] summary { border-bottom: 1px solid var(--mn-line); }
+.bodyCreateAdvanced[open] summary > span:last-child { font-size: 0; }
+.bodyCreateAdvanced[open] summary > span:last-child::after { content: "−"; font-size: 13px; }
+.bodyCreateAdvanced > section { padding: 10px 12px 12px; }
+
+/* PRD-v2.0：关系图默认折叠，由“查看关系图”入口展开。 */
+.graphToggleBar { display: flex; min-height: 44px; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding: 0 13px; border: 1px solid var(--mn-line); border-radius: 11px; background: var(--mn-layer-1); }
+.graphToggleBar > span { min-width: 0; overflow: hidden; color: var(--mn-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.graphToggleBar > button { flex: 0 0 auto; }
 
 .graphLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 270px); gap: 10px; }
 .graphPanel, .graphInspector { border: 1px solid var(--mn-line); border-radius: 11px; background: var(--mn-layer-1); }

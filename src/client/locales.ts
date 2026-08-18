@@ -855,6 +855,28 @@ export const zh = {
   'config.packZipReady': '校验通过 · {components} 个组件 · {items} 项 · {size}',
   'config.packImportZipAction': '安全导入',
   'config.packImportedWhole': '已将 ZIP 安全合并到 {root}。',
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // PRD-v2.0 四大白话导航（由结构改造工程师新增；并行文案工程师请勿修改此区，
+  // 避免合并冲突。术语文案如有调整请改上方既有 key。）
+  // ─────────────────────────────────────────────────────────────────────────
+  'nav.memory': '记忆',
+  'nav.memory.detail': '记忆体、检索与关系图谱',
+  'nav.cheatsheet': '常用小抄',
+  'nav.cheatsheet.detail': '关于我、关于项目的热记忆',
+  'nav.projectDocs': '项目文档',
+  'nav.projectDocs.detail': '项目知识、交付与归档',
+  'nav.runtimeStatus': '运行状态',
+  'nav.runtimeStatus.detail': '运行与诊断',
+  'nav.write': '写入',
+  'memory.searchAdvanced': '高级检索',
+  'memory.viewGraph': '查看关系图',
+  'memory.hideGraph': '收起关系图',
+  'memory.graphHint': '实体、决策与时间线的实时关系图谱；默认折叠。',
+  'memory.createAdvanced': '高级',
+  'memory.createAdvancedHint': '指定记忆引擎与连接；默认智能选择、本地优先。',
+  'cheatsheet.me': '关于我',
+  'cheatsheet.project': '关于项目',
 } satisfies Record<string, string>
 
 export type MnemonKey = keyof typeof zh
@@ -1715,6 +1737,28 @@ export const en = {
   'config.packZipReady': 'Verified · {components} components · {items} items · {size}',
   'config.packImportZipAction': 'Safe import',
   'config.packImportedWhole': 'Safely merged the ZIP into {root}.',
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // PRD-v2.0 plain-language navigation (added by the structure engineer; the
+  // parallel copy engineer should not edit this block to avoid merge conflicts.)
+  // ─────────────────────────────────────────────────────────────────────────
+  'nav.memory': 'Memory',
+  'nav.memory.detail': 'Memory Spaces, recall and graph',
+  'nav.cheatsheet': 'Cheat Sheet',
+  'nav.cheatsheet.detail': 'Hot memory about me and the project',
+  'nav.projectDocs': 'Project Docs',
+  'nav.projectDocs.detail': 'Project knowledge, handoff and archive',
+  'nav.runtimeStatus': 'Runtime Status',
+  'nav.runtimeStatus.detail': 'Runtime and diagnostics',
+  'nav.write': 'Write',
+  'memory.searchAdvanced': 'Advanced search',
+  'memory.viewGraph': 'View graph',
+  'memory.hideGraph': 'Hide graph',
+  'memory.graphHint': 'Live relation graph of entities, decisions and timeline; collapsed by default.',
+  'memory.createAdvanced': 'Advanced',
+  'memory.createAdvancedHint': 'Choose the memory engine and connection; defaults to smart selection, local-first.',
+  'cheatsheet.me': 'About me',
+  'cheatsheet.project': 'About the project',
 } satisfies Record<MnemonKey, string>
 
 export type MnemonTranslate = (key: MnemonKey, params?: Record<string, unknown>) => string

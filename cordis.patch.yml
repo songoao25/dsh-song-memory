@@ -2,8 +2,8 @@
 # replace this config row as a whole; use user settings or environment
 # variables for one-field overrides such as cliPath.
 - insert:
-    - id: mnemon
-      name: dsh-mnemon
+    - id: dsh-song-memory
+      name: dsh-song-memory
       config:
         routingGuidance: true
         displayMode: sidebar

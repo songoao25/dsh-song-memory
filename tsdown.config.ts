@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import type { UserConfig } from 'tsdown'
 import { transform } from 'lightningcss'
 
-const PLUGIN_ID = 'dsh-mnemon'
+const PLUGIN_ID = 'dsh-song-memory'
 const PROJECT_ROOT = dirname(fileURLToPath(import.meta.url))
 const CLIENT_EXTERNALS = [
   /^react(?:\/.*)?$/,

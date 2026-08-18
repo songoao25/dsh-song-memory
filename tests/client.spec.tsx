@@ -318,15 +318,15 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     // PRD-v2.0 四大白话导航：4 个一级标签
-    expect(screen.getByRole('button', { name: /^记忆 记忆体、检索与关系图谱/ })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /^常用小抄 关于我、关于项目的热记忆/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /^记忆 记忆仓库、检索与关系图/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /^常用小抄 关于我、关于项目的常用小抄/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^项目文档 项目知识、交付与归档/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^运行状态 运行与诊断/ })).toBeTruthy()
 
     // 记忆页 = 仓库列表 + 快速检索 + 默认折叠的关系图
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    expect(screen.getByRole('heading', { name: '记忆体' })).toBeTruthy()
-    expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '记忆仓库' })).toBeTruthy()
+    expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy()
     await waitFor(() => expect(screen.getAllByText('项目记忆体').length).toBeGreaterThan(0))
     expect(screen.getByRole('switch', { name: '项目记忆体读取开关' }).getAttribute('aria-checked')).toBe('true')
     expect(screen.getByText('12')).toBeTruthy()
@@ -335,21 +335,21 @@ describe('MnemonView', () => {
     expect(screen.queryByText('LLM-supervised 4-graph persistent memory for AI agents.')).toBeNull()
     expect(screen.getByRole('img', { name: 'Mnemon' })).toBeTruthy()
     // 图谱默认隐藏，点击“查看关系图”展开
-    expect(screen.queryByRole('img', { name: /Mnemon 实时记忆图谱/ })).toBeNull()
+    expect(screen.queryByRole('img', { name: /Mnemon 实时记忆关系图/ })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '查看关系图' }))
-    await waitFor(() => expect(screen.getByRole('img', { name: /Mnemon 实时记忆图谱/ })).toBeTruthy())
-    expect(screen.getByRole('button', { name: '记忆体: 项目记忆体' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: '实体: SQLite' })).toBeTruthy()
-    expect(screen.getByText('1 个空间 · 2 条记忆 · 1 个实体')).toBeTruthy()
+    await waitFor(() => expect(screen.getByRole('img', { name: /Mnemon 实时记忆关系图/ })).toBeTruthy())
+    expect(screen.getByRole('button', { name: '记忆仓库: 项目记忆体' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '主题: SQLite' })).toBeTruthy()
+    expect(screen.getByText('1 个空间 · 2 条记忆 · 1 个主题')).toBeTruthy()
     const entityEdges = container.querySelectorAll('path[data-edge="entity"]')
     expect(entityEdges).toHaveLength(1)
     expect(entityEdges[0]?.getAttribute('data-source-kind')).toBe('entity')
     expect(entityEdges[0]?.getAttribute('data-target-kind')).toBe('memory')
     expect(entityEdges[0]?.getAttribute('data-source-id')).toBe(container.querySelector('[data-kind="entity"]')?.getAttribute('data-node-id'))
-    fireEvent.click(screen.getByRole('button', { name: '实体: SQLite' }))
-    expect(screen.getByText('实体详情')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: '主题: SQLite' }))
+    expect(screen.getByText('主题详情')).toBeTruthy()
     expect(screen.getByText('索引次数')).toBeTruthy()
-    expect(screen.getByRole('toolbar', { name: '图谱布局' })).toBeTruthy()
+    expect(screen.getByRole('toolbar', { name: '关系图布局' })).toBeTruthy()
     expect(screen.getByRole('button', { name: '自然铺开' })).toBeTruthy()
     expect(screen.getByRole('button', { name: '均匀重置' })).toBeTruthy()
 
@@ -364,19 +364,19 @@ describe('MnemonView', () => {
 
     // 常用小抄 = 原运行时页（分类改“关于我/关于项目”）
     fireEvent.click(screen.getByRole('button', { name: /^常用小抄 / }))
-    expect(screen.getByRole('heading', { name: '运行时记忆' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '常用小抄' })).toBeTruthy()
     await waitFor(() => expect(screen.getByText('用户偏好简洁中文回答。')).toBeTruthy())
     expect(screen.getByRole('region', { name: '关于我' })).toBeTruthy()
     expect(screen.getByRole('region', { name: '关于项目' })).toBeTruthy()
-    fireEvent.change(screen.getByRole('textbox', { name: '运行时记忆内容' }), { target: { value: '项目默认使用 pnpm。' } })
+    fireEvent.change(screen.getByRole('textbox', { name: '常用小抄内容' }), { target: { value: '项目默认使用 pnpm。' } })
     fireEvent.click(screen.getByRole('button', { name: '添加' }))
     await waitFor(() => expect(screen.getByText('项目默认使用 pnpm。')).toBeTruthy())
 
     // 项目文档 = 原档案页
     fireEvent.click(screen.getByRole('button', { name: /^项目文档 / }))
-    expect(screen.getByRole('heading', { name: '项目档案' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '项目文档' })).toBeTruthy()
     await waitFor(() => expect(screen.getByText('发布验证清单')).toBeTruthy())
-    const documentReader = screen.getByRole('region', { name: '档案阅读器' })
+    const documentReader = screen.getByRole('region', { name: '项目文档阅读器' })
     await waitFor(() => expect(documentReader.querySelector('h1')?.textContent).toBe('发布验证'))
     const selectedDocument = screen.getByRole('button', { name: /发布验证清单/ })
     expect(selectedDocument.getAttribute('aria-pressed')).toBe('true')
@@ -398,32 +398,32 @@ describe('MnemonView', () => {
     expect(screen.queryByText('记忆子 Agent 可用')).toBeNull()
     expect(screen.queryByRole('heading', { name: '子 Agent 生命周期' })).toBeNull()
     expect(screen.queryByRole('heading', { name: '记忆系统流转' })).toBeNull()
-    expect(screen.getByRole('heading', { name: '三方 Provider' })).toBeTruthy()
-    const nativeProviderStatus = screen.getByRole('region', { name: 'mnemon Provider 状态' })
-    const providerStatus = screen.getByRole('region', { name: '三方 Provider 状态' })
+    expect(screen.getByRole('heading', { name: '三方存储服务' })).toBeTruthy()
+    const nativeProviderStatus = screen.getByRole('region', { name: 'mnemon 存储服务状态' })
+    const providerStatus = screen.getByRole('region', { name: '三方存储服务状态' })
     expect(within(nativeProviderStatus).getByText('mnemon')).toBeTruthy()
     expect(nativeProviderStatus.compareDocumentPosition(providerStatus) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(within(providerStatus).getByText('OpenViking')).toBeTruthy()
     expect(within(providerStatus).getByText('连接正常')).toBeTruthy()
     expect(within(providerStatus).getByText('Mem0')).toBeTruthy()
     expect(within(providerStatus).getByText('已关闭')).toBeTruthy()
-    expect(screen.getByRole('heading', { name: '存储域' })).toBeTruthy()
-    expect(within(screen.getByRole('region', { name: '存储域' })).getAllByRole('article')).toHaveLength(3)
+    expect(screen.getByRole('heading', { name: '存储位置' })).toBeTruthy()
+    expect(within(screen.getByRole('region', { name: '存储位置' })).getAllByRole('article')).toHaveLength(3)
     expect(screen.queryByText('后台状态')).toBeNull()
     expect(screen.getByText('/tmp/mnemon')).toBeTruthy()
 
     // 记忆页内二级：检索 / 内容 / 实体 / 写入 均可达
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    const memoryTabs = screen.getByRole('tablist', { name: '记忆体页面' })
+    const memoryTabs = screen.getByRole('tablist', { name: '记忆仓库页面' })
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '检索' }))
     expect(screen.getByRole('heading', { name: '检索记忆' })).toBeTruthy()
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '内容' }))
     expect(screen.getByRole('heading', { name: '记忆内容' })).toBeTruthy()
-    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '实体' }))
-    expect(screen.getByRole('heading', { name: '实体查阅' })).toBeTruthy()
+    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '主题' }))
+    expect(screen.getByRole('heading', { name: '主题' })).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: '写入' }))
-    expect(screen.getByRole('heading', { name: '沉淀记忆' })).toBeTruthy()
-    expect(screen.getByText('独立任务 Agent 会完成什么')).toBeTruthy()
+    expect(screen.getByRole('heading', { name: '存入记忆' })).toBeTruthy()
+    expect(screen.getByText('后台 AI 小助手会完成什么')).toBeTruthy()
     expect(screen.getByText('人工高级选项')).toBeTruthy()
   }, 10_000)
 
@@ -437,7 +437,7 @@ describe('MnemonView', () => {
     expect(screen.getByText('系统正常')).toBeTruthy()
     expect(screen.queryByText('Mnemon 不可用')).toBeNull()
 
-    const nativeStatus = screen.getByRole('region', { name: 'mnemon Provider 状态' })
+    const nativeStatus = screen.getByRole('region', { name: 'mnemon 存储服务状态' })
     expect(within(nativeStatus).getByText('连接需要检查')).toBeTruthy()
     expect(within(nativeStatus).getByText('项目记忆体: Mnemon Store 无法打开')).toBeTruthy()
   })
@@ -456,10 +456,10 @@ describe('MnemonView', () => {
     expect(call).toHaveBeenCalledWith('/dsh-mnemon-activation', 'body', { memoryBodyId: 'preferences', active: true, sessionId: 'session-1' })
     expect(call).not.toHaveBeenCalledWith('/dsh-mnemon-write', 'body-update', expect.objectContaining({ memoryBodyId: 'preferences', active: true }))
     fireEvent.click(screen.getByRole('button', { name: '查看关系图' }))
-    await waitFor(() => expect(screen.getByRole('img', { name: /Mnemon 实时记忆图谱，7 个元素/ })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('img', { name: /Mnemon 实时记忆关系图，7 个元素/ })).toBeTruthy())
     expect(screen.getByRole('button', { name: /偏好: 用户偏好简洁中文回答/ })).toBeTruthy()
-    expect(screen.getByRole('button', { name: '记忆体: 偏好记忆体' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: '实体: DSH' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '记忆仓库: 偏好记忆体' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '主题: DSH' })).toBeTruthy()
   })
 
   it('keeps only activation controls writable on a remote trusted-host connection', async () => {
@@ -475,9 +475,9 @@ describe('MnemonView', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
     expect(screen.getByText('仅可切换激活状态')).toBeTruthy()
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
     expect((screen.getByRole('button', { name: '写入' }) as HTMLButtonElement).disabled).toBe(true)
-    expect(screen.queryByRole('button', { name: '创建记忆体' })).toBeNull()
+    expect(screen.queryByRole('button', { name: '创建记忆仓库' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'AI 维护元信息' })).toBeNull()
     expect((screen.getByRole('button', { name: '编辑项目记忆体' }) as HTMLButtonElement).disabled).toBe(true)
     expect((screen.getByRole('button', { name: '删除项目记忆体' }) as HTMLButtonElement).disabled).toBe(true)
@@ -511,7 +511,7 @@ describe('MnemonView', () => {
     expect(openVikingSnapshot?.querySelector('[data-provider="openviking"]')?.textContent).toBe('OpenViking')
     expect(document.querySelector('[data-kind="space"][data-provider="mnemon-native"]')).toBeTruthy()
 
-    const memoryTabs = screen.getByRole('tablist', { name: '记忆体页面' })
+    const memoryTabs = screen.getByRole('tablist', { name: '记忆仓库页面' })
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '检索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
@@ -524,19 +524,19 @@ describe('MnemonView', () => {
     expect(mem0RecallSource?.querySelector('[data-provider="mem0"]')?.textContent).toBe('Mem0')
 
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '内容' }))
-    const contentSources = await screen.findByRole('region', { name: 'Provider 内容模型' })
+    const contentSources = await screen.findByRole('region', { name: '存储服务内容模型' })
     const openVikingFilter = within(contentSources).getByRole('button', { name: /OpenViking 团队知识/ })
     fireEvent.click(openVikingFilter)
     expect(openVikingFilter.getAttribute('aria-pressed')).toBe('true')
-    expect(await screen.findByRole('heading', { name: '查询型记忆体等待问题' })).toBeTruthy()
+    expect(await screen.findByRole('heading', { name: '查询型记忆仓库等待问题' })).toBeTruthy()
     expect(within(contentSources).getByText('当前表面不可用')).toBeTruthy()
     fireEvent.click(openVikingFilter)
     expect(openVikingFilter.getAttribute('aria-pressed')).toBe('false')
-    expect(within(contentSources).getByRole('button', { name: '全部 Provider' }).getAttribute('aria-pressed')).toBe('true')
+    expect(within(contentSources).getByRole('button', { name: '全部存储服务' }).getAttribute('aria-pressed')).toBe('true')
 
-    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '实体' }))
-    const entitySources = await screen.findByRole('region', { name: '实体能力范围' })
-    expect(within(entitySources).getByText('实体索引')).toBeTruthy()
+    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '主题' }))
+    const entitySources = await screen.findByRole('region', { name: '主题能力范围' })
+    expect(within(entitySources).getByText('主题索引')).toBeTruthy()
     expect(within(entitySources).getByText('Mem0 用户画像')).toBeTruthy()
     expect(within(entitySources).getByText('不支持')).toBeTruthy()
   })
@@ -612,7 +612,7 @@ describe('MnemonView', () => {
     expect(statusTab.hasAttribute('data-active')).toBe(false)
     expect(bodiesTab.getAttribute('aria-selected')).toBe('true')
     expect(bodiesTab.hasAttribute('data-active')).toBe(true)
-    const memoryTablist = screen.getByRole('tablist', { name: '记忆体页面' })
+    const memoryTablist = screen.getByRole('tablist', { name: '记忆仓库页面' })
     const memoryTabs = within(memoryTablist).getAllByRole('tab')
     const overviewTab = within(memoryTablist).getByRole('tab', { name: '概览' })
     const searchTab = within(memoryTablist).getByRole('tab', { name: '检索' })
@@ -621,20 +621,20 @@ describe('MnemonView', () => {
     expect(overviewTab.getAttribute('aria-selected')).toBe('true')
     expect(rememberAction.className).toContain('primaryButton')
     expect(screen.getByRole('heading', { name: '记忆', level: 2 })).toBeTruthy()
-    expect(screen.getByText('统一管理 Mnemon 记忆体与第三方 Provider 接入的记忆空间；激活后的记忆体共同参与读取、路由与实时快照。')).toBeTruthy()
+    expect(screen.getByText('统一管理 Mnemon 记忆仓库与第三方存储服务接入的记忆空间；激活后的记忆仓库共同参与读取、路由与实时快照。')).toBeTruthy()
     expect(screen.getByRole('heading', { name: '概览', level: 2 })).toBeTruthy()
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
 
-    const createBodyButton = screen.getByRole('button', { name: '创建记忆体' })
+    const createBodyButton = screen.getByRole('button', { name: '创建记忆仓库' })
     createBodyButton.focus()
     fireEvent.click(createBodyButton)
-    const bodyCreateDialog = screen.getByRole('dialog', { name: '创建记忆体' })
-    expect(within(bodyCreateDialog).getByRole('textbox', { name: '新记忆体名称' })).toBeTruthy()
-    expect(within(bodyCreateDialog).getByRole('textbox', { name: '新记忆体描述' })).toBeTruthy()
+    const bodyCreateDialog = screen.getByRole('dialog', { name: '创建记忆仓库' })
+    expect(within(bodyCreateDialog).getByRole('textbox', { name: '新记忆仓库名称' })).toBeTruthy()
+    expect(within(bodyCreateDialog).getByRole('textbox', { name: '新记忆仓库描述' })).toBeTruthy()
     const bodyCreateCancel = within(bodyCreateDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (bodyCreateCancel === undefined) throw new Error('memory body create cancel button missing')
     fireEvent.click(bodyCreateCancel)
-    expect(screen.queryByRole('dialog', { name: '创建记忆体' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '创建记忆仓库' })).toBeNull()
     expect(document.activeElement).toBe(createBodyButton)
 
     fireEvent.click(await screen.findByRole('button', { name: '编辑项目记忆体' }))
@@ -648,15 +648,15 @@ describe('MnemonView', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '删除项目记忆体' }))
     const deleteDialog = screen.getByRole('dialog', { name: '删除“项目记忆体”？' })
-    expect(within(deleteDialog).getByText(/永久删除这个记忆体及其中的全部记忆与关系/)).toBeTruthy()
+    expect(within(deleteDialog).getByText(/永久删除这个记忆仓库及其中的全部记忆与关系/)).toBeTruthy()
     expect(document.activeElement).toBe(within(deleteDialog).getAllByRole('button', { name: '取消' }).at(-1))
     fireEvent.click(within(deleteDialog).getByRole('button', { name: '确认删除' }))
     await waitFor(() => expect(screen.queryByRole('dialog', { name: '删除“项目记忆体”？' })).toBeNull())
     expect(call).toHaveBeenCalledWith(expect.anything(), 'body-delete', { memoryBodyId: 'project', sessionId: 'session-1' })
 
     fireEvent.click(rememberAction)
-    const rememberDialog = screen.getByRole('dialog', { name: '沉淀记忆' })
-    expect(within(rememberDialog).getByRole('textbox', { name: '待沉淀内容' })).toBeTruthy()
+    const rememberDialog = screen.getByRole('dialog', { name: '存入记忆' })
+    expect(within(rememberDialog).getByRole('textbox', { name: '待存入内容' })).toBeTruthy()
     const advanced = rememberDialog.querySelector('details')
     expect(advanced?.hasAttribute('open')).toBe(false)
     fireEvent.click(within(rememberDialog).getByText('人工高级选项'))
@@ -664,49 +664,49 @@ describe('MnemonView', () => {
     const rememberCancel = within(rememberDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (rememberCancel === undefined) throw new Error('remember cancel button missing')
     fireEvent.click(rememberCancel)
-    expect(screen.queryByRole('dialog', { name: '沉淀记忆' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '存入记忆' })).toBeNull()
     expect(overviewTab.getAttribute('aria-selected')).toBe('true')
 
     fireEvent.click(searchTab)
     expect(searchTab.getAttribute('aria-selected')).toBe('true')
     expect(screen.getByRole('heading', { name: '检索记忆', level: 2 })).toBeTruthy()
     fireEvent.click(statusTab)
-    expect(screen.queryByRole('tablist', { name: '记忆体页面' })).toBeNull()
+    expect(screen.queryByRole('tablist', { name: '记忆仓库页面' })).toBeNull()
     fireEvent.click(bodiesTab)
     // 记忆一级标签始终落回记忆页（概览）；页内二级不跨标签记忆位置
-    expect(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '概览' }).getAttribute('aria-selected')).toBe('true')
+    expect(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '概览' }).getAttribute('aria-selected')).toBe('true')
     expect(screen.getByRole('heading', { name: '概览', level: 2 })).toBeTruthy()
 
     fireEvent.click(runtimeTab)
     expect(canvas.hasAttribute('data-lock-page-header')).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: '添加记忆' }))
-    const runtimeDialog = screen.getByRole('dialog', { name: '添加热记忆' })
-    expect(within(runtimeDialog).getByRole('textbox', { name: '运行时记忆内容' })).toBeTruthy()
+    const runtimeDialog = screen.getByRole('dialog', { name: '添加常用小抄' })
+    expect(within(runtimeDialog).getByRole('textbox', { name: '常用小抄内容' })).toBeTruthy()
     const runtimeCancel = within(runtimeDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (runtimeCancel === undefined) throw new Error('runtime cancel button missing')
     fireEvent.click(runtimeCancel)
-    expect(screen.queryByRole('dialog', { name: '添加热记忆' })).toBeNull()
-    const runtimeList = screen.getByRole('region', { name: '运行时记忆列表' })
-    expect(within(runtimeList).getByRole('group', { name: '运行时记忆范围' })).toBeTruthy()
-    expect(within(runtimeList).getByRole('textbox', { name: '筛选运行时记忆' })).toBeTruthy()
+    expect(screen.queryByRole('dialog', { name: '添加常用小抄' })).toBeNull()
+    const runtimeList = screen.getByRole('region', { name: '常用小抄列表' })
+    expect(within(runtimeList).getByRole('group', { name: '常用小抄范围' })).toBeTruthy()
+    expect(within(runtimeList).getByRole('textbox', { name: '筛选常用小抄' })).toBeTruthy()
     fireEvent.click(await within(runtimeList).findByRole('button', { name: '编辑' }))
-    const runtimeEditDialog = screen.getByRole('dialog', { name: '编辑运行时记忆' })
-    expect(within(runtimeEditDialog).getByRole('textbox', { name: '编辑运行时记忆' })).toBeTruthy()
+    const runtimeEditDialog = screen.getByRole('dialog', { name: '编辑常用小抄' })
+    expect(within(runtimeEditDialog).getByRole('textbox', { name: '编辑常用小抄' })).toBeTruthy()
     const runtimeEditCancel = within(runtimeEditDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (runtimeEditCancel === undefined) throw new Error('runtime edit cancel button missing')
     fireEvent.click(runtimeEditCancel)
-    expect(screen.queryByRole('dialog', { name: '编辑运行时记忆' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '编辑常用小抄' })).toBeNull()
     fireEvent.click(within(runtimeList).getByRole('button', { name: '移除' }))
-    const runtimeRemoveDialog = screen.getByRole('dialog', { name: '移除运行时记忆？' })
+    const runtimeRemoveDialog = screen.getByRole('dialog', { name: '移除常用小抄？' })
     expect(within(runtimeRemoveDialog).getByText(/不再随每轮上下文加载/)).toBeTruthy()
     const runtimeRemoveCancel = within(runtimeRemoveDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (runtimeRemoveCancel === undefined) throw new Error('runtime remove cancel button missing')
     fireEvent.click(runtimeRemoveCancel)
-    expect(screen.queryByRole('dialog', { name: '移除运行时记忆？' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '移除常用小抄？' })).toBeNull()
 
     fireEvent.click(bodiesTab)
     expect(canvas.hasAttribute('data-lock-page-header')).toBe(false)
-    const contentTab = within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '内容' })
+    const contentTab = within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '内容' })
     fireEvent.click(contentTab)
     fireEvent.click(await screen.findByRole('button', { name: '忘记' }))
     const forgetDialog = screen.getByRole('dialog', { name: '软删除这条记忆？' })
@@ -718,28 +718,28 @@ describe('MnemonView', () => {
 
     fireEvent.click(documentsTab)
     expect(canvas.hasAttribute('data-lock-page-header')).toBe(true)
-    fireEvent.click(screen.getByRole('button', { name: '新建档案' }))
-    const documentDialog = screen.getByRole('dialog', { name: '创建托管档案' })
+    fireEvent.click(screen.getByRole('button', { name: '新建项目文档' }))
+    const documentDialog = screen.getByRole('dialog', { name: '创建托管项目文档' })
     expect(within(documentDialog).getByRole('textbox', { name: '标题' })).toBeTruthy()
     const documentCancel = within(documentDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (documentCancel === undefined) throw new Error('document cancel button missing')
     fireEvent.click(documentCancel)
-    expect(screen.queryByRole('dialog', { name: '创建托管档案' })).toBeNull()
-    const documentReader = screen.getByRole('region', { name: '档案阅读器' })
+    expect(screen.queryByRole('dialog', { name: '创建托管项目文档' })).toBeNull()
+    const documentReader = screen.getByRole('region', { name: '项目文档阅读器' })
     fireEvent.click(await within(documentReader).findByRole('button', { name: '编辑' }))
-    const documentEditDialog = screen.getByRole('dialog', { name: '编辑活跃档案' })
+    const documentEditDialog = screen.getByRole('dialog', { name: '编辑活跃项目文档' })
     expect(within(documentEditDialog).getByRole('textbox', { name: '标题' })).toBeTruthy()
     const documentEditCancel = within(documentEditDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (documentEditCancel === undefined) throw new Error('document edit cancel button missing')
     fireEvent.click(documentEditCancel)
-    expect(screen.queryByRole('dialog', { name: '编辑活跃档案' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '编辑活跃项目文档' })).toBeNull()
     fireEvent.click(within(documentReader).getByRole('button', { name: '归档' }))
-    const documentArchiveDialog = screen.getByRole('dialog', { name: '确认建立 Mnemon 索引并迁移这份档案？' })
-    expect(within(documentArchiveDialog).getByText(/受限的独立任务 Agent 写入可检索的 Mnemon 摘要/)).toBeTruthy()
+    const documentArchiveDialog = screen.getByRole('dialog', { name: '确认建立 Mnemon 索引并迁移这份项目文档？' })
+    expect(within(documentArchiveDialog).getByText(/受限的后台 AI 小助手写入可检索的 Mnemon 摘要/)).toBeTruthy()
     const documentArchiveCancel = within(documentArchiveDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (documentArchiveCancel === undefined) throw new Error('document archive cancel button missing')
     fireEvent.click(documentArchiveCancel)
-    expect(screen.queryByRole('dialog', { name: '确认建立 Mnemon 索引并迁移这份档案？' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '确认建立 Mnemon 索引并迁移这份项目文档？' })).toBeNull()
     expect(screen.queryByRole('img', { name: 'Mnemon' })).toBeNull()
   })
 
@@ -749,7 +749,7 @@ describe('MnemonView', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
     await waitFor(() => expect(screen.getByText('Mnemon 默认')).toBeTruthy())
-    expect(screen.getByText(/首次接入时建立映射，之后点击卡片只检测当前记忆体；本地维护的标题与说明不会被重连覆盖/)).toBeTruthy()
+    expect(screen.getByText(/首次接入时建立映射，之后点击卡片只检测当前记忆仓库；本地维护的标题与说明不会被重连覆盖/)).toBeTruthy()
     const toggle = screen.getByRole('switch', { name: '项目记忆体读取开关' })
     expect(toggle.hasAttribute('disabled')).toBe(false)
     fireEvent.click(toggle)
@@ -760,7 +760,7 @@ describe('MnemonView', () => {
     expect(deleteButton.getAttribute('title')).toContain('至少一个原生 Store')
   })
 
-  it('keeps the Memory Space directory interactive while the live graph is still pending', async () => {
+  it('keeps the Memory Store directory interactive while the live graph is still pending', async () => {
     const { connection } = createConnection({ graphPending: true })
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
@@ -768,8 +768,8 @@ describe('MnemonView', () => {
     fireEvent.click(screen.getByRole('button', { name: '查看关系图' }))
     expect(await screen.findByText('项目记忆体')).toBeTruthy()
     expect(screen.getByRole('switch', { name: '项目记忆体读取开关' }).hasAttribute('disabled')).toBe(false)
-    expect(screen.getByText('正在同步多记忆体实时快照…')).toBeTruthy()
-    expect(screen.getAllByRole('status', { name: '正在加载多记忆体实时快照' })).toHaveLength(1)
+    expect(screen.getByText('正在同步多记忆仓库实时快照…')).toBeTruthy()
+    expect(screen.getAllByRole('status', { name: '正在加载多记忆仓库实时快照' })).toHaveLength(1)
   })
 
   it('uses the card status signal as the only per-space reconnect spinner', async () => {
@@ -788,7 +788,7 @@ describe('MnemonView', () => {
     expect(card.querySelector('[class*="bodySignal"]')).toBeTruthy()
   })
 
-  it('runs one full entry sync and keeps later card sync scoped to one Memory Space', async () => {
+  it('runs one full entry sync and keeps later card sync scoped to one Memory Store', async () => {
     const interval = vi.spyOn(window, 'setInterval')
     const { connection, call } = createConnection()
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
@@ -826,7 +826,7 @@ describe('MnemonView', () => {
     expect(screen.queryByText('连接需要检查')).toBeNull()
   })
 
-  it('edits an existing Memory Space name and description', async () => {
+  it('edits an existing Memory Store name and description', async () => {
     const { connection, call } = createConnection()
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" />)
 
@@ -844,14 +844,14 @@ describe('MnemonView', () => {
     expect(call).toHaveBeenCalledWith(expect.anything(), 'body-update', { memoryBodyId: 'project', name: '项目决策空间', description: '存放架构与交付决策。', sessionId: 'session-1' })
   })
 
-  it('selects active Memory Spaces and generates metadata through a read-only subagent flow', async () => {
+  it('selects active Memory Stores and generates metadata through a read-only subagent flow', async () => {
     const { connection, call } = createConnection({ withInactiveBody: true })
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
     fireEvent.click(screen.getByRole('button', { name: 'AI 维护元信息' }))
-    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })
+    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })
     const project = within(dialog).getByRole('checkbox', { name: /项目记忆体/ })
     expect(within(dialog).queryByRole('checkbox', { name: /偏好记忆体/ })).toBeNull()
     fireEvent.click(project)
@@ -859,7 +859,7 @@ describe('MnemonView', () => {
 
     await waitFor(() => expect(within(dialog).getByText('产品决策')).toBeTruthy())
     expect(call).toHaveBeenCalledWith(expect.anything(), 'body-metadata-maintain', { memoryBodyIds: ['project'] })
-    expect(screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })).toBe(dialog)
+    expect(screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })).toBe(dialog)
     expect(within(dialog).getByText('记录稳定的产品范围、架构取舍与依据，在规划和复盘产品方向时召回。')).toBeTruthy()
     expect(within(dialog).getByText('产品决策').closest('label')?.hasAttribute('data-refreshed')).toBe(true)
     expect(screen.queryByText('已更新产品决策元信息。')).toBeNull()
@@ -870,11 +870,11 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
     const action = screen.getByRole('button', { name: 'AI 维护元信息' })
     expect(action.hasAttribute('disabled')).toBe(false)
     fireEvent.click(action)
-    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })
+    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })
     expect(within(dialog).getByText(/最快的原生查询路径读取少量样本/)).toBeTruthy()
     fireEvent.click(within(dialog).getByRole('checkbox', { name: /项目记忆体/ }))
     fireEvent.click(within(dialog).getByRole('button', { name: 'AI 生成（1）' }))
@@ -892,7 +892,7 @@ describe('MnemonView', () => {
     expect(action.hasAttribute('disabled')).toBe(false)
     fireEvent.click(action)
 
-    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })
+    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })
     expect(within(dialog).getByRole('checkbox', { name: /项目记忆体/ })).toBeTruthy()
   })
 
@@ -901,12 +901,12 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
     const action = screen.getByRole('button', { name: 'AI 维护元信息' })
     expect(action.hasAttribute('disabled')).toBe(false)
     fireEvent.click(action)
 
-    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })
+    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })
     expect(within(dialog).queryByText('暂时无法运行：未找到与当前记忆范围匹配的活跃 Agent')).toBeNull()
     fireEvent.click(within(dialog).getByRole('checkbox', { name: /项目记忆体/ }))
     expect(within(dialog).getByRole('button', { name: 'AI 生成（1）' }).hasAttribute('disabled')).toBe(false)
@@ -917,9 +917,9 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
     fireEvent.click(screen.getByRole('button', { name: 'AI 维护元信息' }))
-    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })
+    const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })
     fireEvent.click(within(dialog).getByRole('checkbox', { name: /项目记忆体/ }))
     fireEvent.click(within(dialog).getByRole('checkbox', { name: /偏好记忆体/ }))
     fireEvent.click(within(dialog).getByRole('button', { name: 'AI 生成（2）' }))
@@ -931,18 +931,18 @@ describe('MnemonView', () => {
     expect(call).not.toHaveBeenCalledWith(expect.anything(), 'body-metadata-maintain', { memoryBodyIds: ['project', 'preferences'] })
     expect(within(dialog).getByText('产品决策').closest('label')?.hasAttribute('data-refreshed')).toBe(true)
     expect(within(dialog).getByText('偏好记忆体').closest('label')?.hasAttribute('data-failed')).toBe(true)
-    expect(screen.getByRole('dialog', { name: 'AI 维护记忆体元信息' })).toBe(dialog)
+    expect(screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })).toBe(dialog)
     expect(screen.getByRole('button', { name: 'AI 维护元信息' }).hasAttribute('disabled')).toBe(false)
   })
 
-  it('adds OpenViking through the existing Memory Space creation flow', async () => {
+  it('adds OpenViking through the existing Memory Store creation flow', async () => {
     const { connection, call } = createConnection({ withInactiveBody: true })
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: '创建记忆体' }))
-    const dialog = screen.getByRole('dialog', { name: '创建记忆体' })
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
+    fireEvent.click(screen.getByRole('button', { name: '创建记忆仓库' }))
+    const dialog = screen.getByRole('dialog', { name: '创建记忆仓库' })
     // FR-4：默认只显示名字+说明，Provider 折叠在“高级”内
     fireEvent.click(within(dialog).getByText('高级'))
     expect(within(dialog).getByRole('radio', { name: /mnemon/ }).getAttribute('value')).toBe('mnemon-native')
@@ -950,12 +950,12 @@ describe('MnemonView', () => {
     expect(openVikingChoice.closest('label')?.querySelector('[data-provider-icon="openviking"]')).toBeTruthy()
     fireEvent.click(openVikingChoice)
     expect(openVikingChoice.closest('label')?.hasAttribute('data-selected')).toBe(true)
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆体名称' }), { target: { value: '团队 OpenViking' } })
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆体描述' }), { target: { value: '跨项目共享的团队长期记忆。' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库名称' }), { target: { value: '团队 OpenViking' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库描述' }), { target: { value: '跨项目共享的团队长期记忆。' } })
     fireEvent.change(within(dialog).getByRole('textbox', { name: '记忆范围 URI' }), { target: { value: 'viking://user/team/memories' } })
     fireEvent.click(within(dialog).getByRole('button', { name: '创建' }))
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆体' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆仓库' })).toBeNull())
     expect(call).toHaveBeenCalledWith(expect.anything(), 'body-create', expect.objectContaining({
       name: '团队 OpenViking',
       description: '跨项目共享的团队长期记忆。',
@@ -974,19 +974,19 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={strategySettingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: '创建记忆体' }))
-    const createDialog = screen.getByRole('dialog', { name: '创建记忆体' })
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
+    fireEvent.click(screen.getByRole('button', { name: '创建记忆仓库' }))
+    const createDialog = screen.getByRole('dialog', { name: '创建记忆仓库' })
     expect(within(createDialog).queryByRole('radio', { name: /智能选择/ })).toBeNull()
     expect(within(createDialog).getByText(/明确的手动创建/)).toBeTruthy()
     fireEvent.click(within(createDialog).getAllByRole('button', { name: '取消' }).at(-1)!)
 
-    fireEvent.click(screen.getByRole('button', { name: '沉淀策略' }))
-    const dialog = screen.getByRole('dialog', { name: '沉淀策略' })
+    fireEvent.click(screen.getByRole('button', { name: '自动存入策略' }))
+    const dialog = screen.getByRole('dialog', { name: '自动存入策略' })
     await waitFor(() => expect(within(dialog).getByRole('radio', { name: /智能选择/ })).toBeTruthy())
     expect((within(dialog).getByRole('radio', { name: /手动指定/ }) as HTMLInputElement).checked).toBe(true)
     fireEvent.click(within(dialog).getByRole('radio', { name: /智能选择/ }))
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '策略 Prompt（可选）' }), { target: { value: '这是团队知识；满足精确写入后优先共享。' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '自动存入策略说明（可选）' }), { target: { value: '这是团队知识；满足精确写入后优先共享。' } })
     fireEvent.change(within(dialog).getByRole('combobox', { name: '软偏好' }), { target: { value: 'shared-first' } })
     const exactWrite = within(dialog).getByRole('checkbox', { name: '精确写入' })
     const openVikingCandidate = within(dialog).getByRole('checkbox', { name: /OpenViking/ })
@@ -995,9 +995,9 @@ describe('MnemonView', () => {
     expect(exactWrite.closest('label')?.hasAttribute('data-selected')).toBe(true)
     expect(openVikingCandidate.closest('label')?.hasAttribute('data-selected')).toBe(true)
     fireEvent.change(within(dialog).getByRole('textbox', { name: '记忆范围 URI' }), { target: { value: 'viking://user/team/memories' } })
-    fireEvent.click(within(dialog).getByRole('button', { name: '保存策略' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: '保存' }))
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: '沉淀策略' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: '自动存入策略' })).toBeNull())
     expect(setPath).toHaveBeenCalledWith(['persistenceStrategy'], {
       mode: 'automatic',
       providerId: 'mnemon-native',
@@ -1015,25 +1015,25 @@ describe('MnemonView', () => {
     expect(call.mock.calls.some(([, endpoint]) => endpoint === 'body-create')).toBe(false)
   })
 
-  it('shows every third-party engine under the existing Memory Space flow', async () => {
+  it('shows every third-party engine under the existing Memory Store flow', async () => {
     const { connection, call } = createConnection({ withInactiveBody: true })
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: '创建记忆体' }))
-    const dialog = screen.getByRole('dialog', { name: '创建记忆体' })
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
+    fireEvent.click(screen.getByRole('button', { name: '创建记忆仓库' }))
+    const dialog = screen.getByRole('dialog', { name: '创建记忆仓库' })
     fireEvent.click(within(dialog).getByText('高级'))
     for (const provider of ['mnemon', 'OpenViking', 'Honcho', 'Mem0', 'Hindsight', 'Holographic', 'RetainDB', 'ByteRover', 'Supermemory']) {
       expect(within(dialog).getByRole('radio', { name: new RegExp(provider) })).toBeTruthy()
     }
 
     fireEvent.click(within(dialog).getByRole('radio', { name: /Mem0/ }))
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆体名称' }), { target: { value: '用户画像' } })
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆体描述' }), { target: { value: '跨会话用户偏好与事实。' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库名称' }), { target: { value: '用户画像' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库描述' }), { target: { value: '跨会话用户偏好与事实。' } })
     fireEvent.click(within(dialog).getByRole('button', { name: '创建' }))
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆体' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆仓库' })).toBeNull())
     expect(call).toHaveBeenCalledWith(expect.anything(), 'body-create', expect.objectContaining({
       providerId: 'mem0',
       connection: expect.objectContaining({ userId: 'dsh-user', agentId: 'dsh', rerank: false }),
@@ -1045,9 +1045,9 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: '沉淀策略' }))
-    const dialog = screen.getByRole('dialog', { name: '沉淀策略' })
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
+    fireEvent.click(screen.getByRole('button', { name: '自动存入策略' }))
+    const dialog = screen.getByRole('dialog', { name: '自动存入策略' })
     await waitFor(() => expect(within(dialog).getByRole('radio', { name: /智能选择/ })).toBeTruthy())
     fireEvent.click(within(dialog).getByRole('radio', { name: /智能选择/ }))
     fireEvent.change(within(dialog).getByRole('combobox', { name: '数据边界' }), { target: { value: 'local-only' } })
@@ -1057,7 +1057,7 @@ describe('MnemonView', () => {
     expect((within(dialog).getByRole('checkbox', { name: /ByteRover/ }) as HTMLInputElement).disabled).toBe(false)
   })
 
-  it('shows the persisted provider decision on the Memory Space card', async () => {
+  it('shows the persisted provider decision on the Memory Store card', async () => {
     const { connection } = createConnection({ withPlacement: true })
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
@@ -1118,9 +1118,9 @@ describe('MnemonView', () => {
 
     await waitFor(() => expect(screen.getByText('已连接')).toBeTruthy())
     fireEvent.click(screen.getByRole('tab', { name: '常用小抄' }))
-    const oldRuntime = await screen.findByRole('region', { name: '运行时记忆列表' })
+    const oldRuntime = await screen.findByRole('region', { name: '常用小抄列表' })
     await waitFor(() => expect(within(oldRuntime).getByText('运行时条目 1')).toBeTruthy())
-    fireEvent.change(within(oldRuntime).getByRole('textbox', { name: '筛选运行时记忆' }), { target: { value: '条目 1' } })
+    fireEvent.change(within(oldRuntime).getByRole('textbox', { name: '筛选常用小抄' }), { target: { value: '条目 1' } })
     const oldCanvas = screen.getByTestId('mnemon-canvas')
     oldCanvas.scrollTop = 240
 
@@ -1130,7 +1130,7 @@ describe('MnemonView', () => {
     expect(newCanvas).not.toBe(oldCanvas)
     expect(newCanvas.scrollTop).toBe(0)
     expect(screen.queryByText('运行时条目 1')).toBeNull()
-    expect((screen.getByRole('textbox', { name: '筛选运行时记忆' }) as HTMLInputElement).value).toBe('')
+    expect((screen.getByRole('textbox', { name: '筛选常用小抄' }) as HTMLInputElement).value).toBe('')
     expect(screen.getByLabelText('存储位置模式：自定义')).toBeTruthy()
     await waitFor(() => expect(delayedCall).toHaveBeenCalledWith(expect.anything(), 'status', expect.objectContaining({ workspaceId: 'workspace-2' })))
   })
@@ -1180,7 +1180,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('运行时条目 1')).toBeTruthy())
     const oldCanvas = screen.getByTestId('mnemon-canvas')
     oldCanvas.scrollTop = 240
-    fireEvent.change(screen.getByRole('textbox', { name: '筛选运行时记忆' }), { target: { value: '运行时条目' } })
+    fireEvent.change(screen.getByRole('textbox', { name: '筛选常用小抄' }), { target: { value: '运行时条目' } })
 
     settingsGeneration = 1
     snapshot = { ...snapshot, value: { storageScope: 'global' }, revision: 1 }
@@ -1190,7 +1190,7 @@ describe('MnemonView', () => {
     expect(screen.getByTestId('mnemon-canvas').scrollTop).toBe(0)
     expect(screen.getByLabelText('存储位置模式：全局')).toBeTruthy()
     expect(screen.queryByText('运行时条目 1')).toBeNull()
-    expect((screen.getByRole('textbox', { name: '筛选运行时记忆' }) as HTMLInputElement).value).toBe('')
+    expect((screen.getByRole('textbox', { name: '筛选常用小抄' }) as HTMLInputElement).value).toBe('')
 
     releaseNextGeneration()
     await waitFor(() => expect(screen.getByText('全局目录实时加载的运行时记忆。')).toBeTruthy())
@@ -1205,7 +1205,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
     fireEvent.click(screen.getByRole('button', { name: '查看关系图' }))
-    await waitFor(() => expect(screen.getByRole('img', { name: /Mnemon 实时记忆图谱/ })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('img', { name: /Mnemon 实时记忆关系图/ })).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^决策: 这是一段非常长的记忆内容/ }))
     const eye = await screen.findByRole('button', { name: '查看全文' })
@@ -1241,7 +1241,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '内容' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '内容' }))
     await waitFor(() => expect(screen.getByText('当前显示 48 / 60')).toBeTruthy())
     expect(screen.getByText('记忆条目 48')).toBeTruthy()
     expect(screen.queryByText('记忆条目 49')).toBeNull()
@@ -1257,17 +1257,17 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('tab', { name: '常用小抄' }))
-    const runtimeList = await screen.findByRole('region', { name: '运行时记忆列表' })
+    const runtimeList = await screen.findByRole('region', { name: '常用小抄列表' })
     await waitFor(() => expect(within(runtimeList).getByText('当前显示 10 / 23')).toBeTruthy())
     expect(within(runtimeList).queryByText('运行时条目 11')).toBeNull()
     fireEvent.click(within(runtimeList).getByRole('button', { name: '再显示 10 条' }))
     expect(within(runtimeList).getByText('运行时条目 20')).toBeTruthy()
-    fireEvent.change(within(runtimeList).getByRole('textbox', { name: '筛选运行时记忆' }), { target: { value: '运行时条目 21' } })
+    fireEvent.change(within(runtimeList).getByRole('textbox', { name: '筛选常用小抄' }), { target: { value: '运行时条目 21' } })
     expect(within(runtimeList).getByText('当前显示 1 / 1')).toBeTruthy()
     expect(within(runtimeList).getByText('运行时条目 21')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '检索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
     await waitFor(() => expect(screen.getByText('当前显示 6 / 15')).toBeTruthy())
@@ -1275,7 +1275,7 @@ describe('MnemonView', () => {
     fireEvent.click(screen.getByRole('button', { name: '再显示 6 条' }))
     expect(screen.getByText('检索记忆 12')).toBeTruthy()
 
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '实体' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '主题' }))
     await waitFor(() => expect(screen.getByText('当前显示 10 / 25')).toBeTruthy())
     expect(screen.queryByRole('button', { name: /实体 11/ })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '再显示 10 条' }))
@@ -1283,19 +1283,19 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('当前显示 6 / 15')).toBeTruthy())
     expect(screen.queryByText('实体 11 关联记忆 7')).toBeNull()
 
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '内容' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '内容' }))
     await waitFor(() => expect(screen.getByText('当前显示 12 / 25')).toBeTruthy())
     expect(screen.queryByText('记忆条目 13')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '再显示 12 条' }))
     expect(screen.getByText('记忆条目 24')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('tab', { name: '项目文档' }))
-    const documentList = await screen.findByRole('complementary', { name: '项目档案列表' })
+    const documentList = await screen.findByRole('complementary', { name: '项目文档列表' })
     await waitFor(() => expect(within(documentList).getByText('当前显示 8 / 17')).toBeTruthy())
     expect(within(documentList).queryByText('档案条目 9')).toBeNull()
     fireEvent.click(within(documentList).getByRole('button', { name: '再显示 8 条' }))
     expect(within(documentList).getByText('档案条目 16')).toBeTruthy()
-    const documentReader = screen.getByRole('region', { name: '档案阅读器' })
+    const documentReader = screen.getByRole('region', { name: '项目文档阅读器' })
     expect(documentReader.hasAttribute('data-scroll-region')).toBe(true)
     documentReader.scrollTop = 240
     fireEvent.click(within(documentList).getByRole('button', { name: /档案条目 2/ }))
@@ -1327,7 +1327,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '检索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
     await waitFor(() => expect(screen.getByText('项目选择 SQLite，因为需要单文件部署。')).toBeTruthy())
@@ -1347,14 +1347,14 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆体页面' })).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '检索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: 'Agent 查询' }))
 
     await waitFor(() => expect(screen.getByRole('region', { name: 'Agent 查询结果' })).toBeTruthy())
     expect(screen.getByText('项目选择 SQLite，以满足单文件部署。')).toBeTruthy()
     expect(screen.getByText('project/memory-12345678')).toBeTruthy()
-    expect(screen.getByText('原始召回内容')).toBeTruthy()
+    expect(screen.getByText('原始检索内容')).toBeTruthy()
     expect(screen.getByText('项目选择 SQLite，因为需要单文件部署。')).toBeTruthy()
     expect(call).toHaveBeenCalledWith(expect.anything(), 'agent-search', expect.objectContaining({ query: 'SQLite' }))
     const agentSearchPayload = call.mock.calls.find((entry: unknown[]) => entry[1] === 'agent-search')?.[2]
@@ -1368,12 +1368,12 @@ describe('MnemonView', () => {
     fireEvent.click(screen.getByRole('button', { name: /^项目文档 / }))
     await waitFor(() => expect(screen.getByText('发布验证清单')).toBeTruthy())
 
-    fireEvent.click(screen.getByRole('button', { name: '新建档案' }))
+    fireEvent.click(screen.getByRole('button', { name: '新建项目文档' }))
     fireEvent.change(screen.getByRole('textbox', { name: '标题' }), { target: { value: '架构交接说明' } })
     fireEvent.change(screen.getByRole('textbox', { name: '检索说明' }), { target: { value: '解释存储控制层与并发边界。' } })
     fireEvent.change(screen.getByRole('textbox', { name: '来源路径' }), { target: { value: 'src/documents.ts' } })
     fireEvent.change(screen.getByRole('textbox', { name: 'Markdown 内容' }), { target: { value: '# 控制层\n\nindex.json 是事实源。' } })
-    fireEvent.click(screen.getByRole('button', { name: '创建档案' }))
+    fireEvent.click(screen.getByRole('button', { name: '创建项目文档' }))
 
     await waitFor(() => expect(screen.getAllByText('架构交接说明').length).toBeGreaterThan(0))
     expect(call).toHaveBeenCalledWith(expect.anything(), 'document', expect.objectContaining({ action: 'create', title: '架构交接说明', content: '# 控制层\n\nindex.json 是事实源。', sessionId: 'session-1' }))
@@ -1393,10 +1393,10 @@ describe('MnemonView', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
     fireEvent.click(screen.getByRole('button', { name: '写入' }))
-    fireEvent.change(screen.getByRole('textbox', { name: '待沉淀内容' }), { target: { value: '项目发布前必须通过真实 WebUI 验证。' } })
-    fireEvent.click(screen.getByRole('button', { name: '调度独立任务 Agent 判断并沉淀' }))
+    fireEvent.change(screen.getByRole('textbox', { name: '待存入内容' }), { target: { value: '项目发布前必须通过真实 WebUI 验证。' } })
+    fireEvent.click(screen.getByRole('button', { name: '调度后台 AI 小助手判断并存入记忆' }))
 
-    await waitFor(() => expect(screen.getByText(/独立任务 Agent 已完成处理/)).toBeTruthy())
+    await waitFor(() => expect(screen.getByText(/后台 AI 小助手已完成处理/)).toBeTruthy())
     expect(call).toHaveBeenCalledWith(expect.anything(), 'supervise', { content: '项目发布前必须通过真实 WebUI 验证。' })
     expect(call).not.toHaveBeenCalledWith(expect.anything(), 'remember', expect.anything())
   })
@@ -1428,10 +1428,10 @@ describe('MnemonView', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
     fireEvent.click(screen.getByRole('button', { name: '查看关系图' }))
-    await waitFor(() => expect(screen.getAllByRole('heading', { name: '还没有记忆体' })).toHaveLength(1))
+    await waitFor(() => expect(screen.getAllByRole('heading', { name: '还没有记忆仓库' })).toHaveLength(1))
     expect(screen.queryByRole('alert')).toBeNull()
     expect(screen.getByText('0 / 0')).toBeTruthy()
-    expect(screen.getByText('＋ 创建空白记忆体')).toBeTruthy()
+    expect(screen.getByText('＋ 创建空白记忆仓库')).toBeTruthy()
   })
 
   it('marks an old Host catalog as unsynchronized instead of reporting zero bodies', async () => {
@@ -1459,26 +1459,26 @@ describe('MnemonView', () => {
 
     await waitFor(() => expect(screen.getByText('已连接 · 目录待同步')).toBeTruthy())
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    await waitFor(() => expect(screen.getAllByText('记忆体目录尚未同步').length).toBeGreaterThan(0))
+    await waitFor(() => expect(screen.getAllByText('记忆仓库目录尚未同步').length).toBeGreaterThan(0))
     expect(screen.queryByRole('alert')).toBeNull()
     expect(screen.queryByText('0 / 0')).toBeNull()
     expect(screen.getByText('2')).toBeTruthy()
   })
 
-  it('renders all product copy in English with Memory Space terminology', async () => {
+  it('renders all product copy in English with Memory Store terminology', async () => {
     const { connection } = createConnection()
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" t={translateEn} locale="en" />)
 
     await waitFor(() => expect(screen.getByText('Connected · 1 active')).toBeTruthy())
-    expect(screen.getByRole('button', { name: /^Memory Memory Spaces, recall and graph/ })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /^Cheat Sheet Hot memory about me and the project/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /^Memory Memory Stores, search and relation map/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /^Cheat Sheet Cheatsheet about me and the project/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^Project Docs Project knowledge, handoff and archive/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^Runtime Status Runtime and diagnostics/ })).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /^Memory / }))
-    expect(screen.getByRole('heading', { name: 'Memory Spaces' })).toBeTruthy()
-    expect(screen.getByRole('region', { name: 'Memory Space Directory' })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Memory Stores' })).toBeTruthy()
+    expect(screen.getByRole('region', { name: 'Memory Store Directory' })).toBeTruthy()
     expect(screen.getByRole('navigation', { name: 'Mnemon pages' })).toBeTruthy()
-    expect(screen.getByRole('tab', { name: 'Recall' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Search' })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^Project Docs / })).toBeTruthy()
     expect(screen.queryByText('PERSISTENT AGENT MEMORY')).toBeNull()
     expect(screen.queryByText(/Memory Bod(y|ies)/i)).toBeNull()
@@ -1489,7 +1489,7 @@ describe('MnemonView', () => {
     expect(screen.queryByText('Recall worker')).toBeNull()
     expect(screen.queryByRole('heading', { name: 'Subagent Lifecycle' })).toBeNull()
     expect(screen.queryByRole('heading', { name: 'Memory System Flow' })).toBeNull()
-    expect(screen.getAllByText('Memory Spaces').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Memory Stores').length).toBeGreaterThan(0)
   })
 
   it('keeps every conversation anchor reachable from the four plain-language tabs', async () => {
@@ -1506,20 +1506,20 @@ describe('MnemonView', () => {
     dispatchMnemonAnchor({ page: 'explore', seed: 'SQLite', sessionId: 'session-1' })
     await waitFor(() => expect((screen.getByRole('textbox', { name: '记忆查询' }) as HTMLInputElement).value).toBe('SQLite'))
     expect(screen.getByRole('button', { name: '查看关系图' })).toBeTruthy()
-    expect(screen.queryByRole('img', { name: /Mnemon 实时记忆图谱/ })).toBeNull()
+    expect(screen.queryByRole('img', { name: /Mnemon 实时记忆关系图/ })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
     await waitFor(() => expect(screen.getByText('项目选择 SQLite，因为需要单文件部署。')).toBeTruthy())
     expect(call.mock.calls.some(([, endpoint, payload]) => endpoint === 'search' && (payload as { mode?: string })?.mode === 'smart')).toBe(true)
 
     // 其余 anchor 目标页直接对应 4 个一级标签
     dispatchMnemonAnchor({ page: 'documents', sessionId: 'session-1' })
-    await waitFor(() => expect(screen.getByRole('heading', { name: '项目档案' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('heading', { name: '项目文档' })).toBeTruthy())
     dispatchMnemonAnchor({ page: 'runtime', sessionId: 'session-1' })
-    await waitFor(() => expect(screen.getByRole('heading', { name: '运行时记忆' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('heading', { name: '常用小抄' })).toBeTruthy())
     dispatchMnemonAnchor({ page: 'status', sessionId: 'session-1' })
     await waitFor(() => expect(screen.getByRole('heading', { name: '系统状态' })).toBeTruthy())
     dispatchMnemonAnchor({ page: 'overview', sessionId: 'session-1' })
-    await waitFor(() => expect(screen.getByRole('heading', { name: '记忆体' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('heading', { name: '记忆仓库' })).toBeTruthy())
   })
 
   it('keeps the create form minimal by default and expands provider settings under Advanced', async () => {
@@ -1527,13 +1527,13 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    await waitFor(() => expect(screen.getByRole('region', { name: '记忆体目录' })).toBeTruthy())
-    fireEvent.click(screen.getByRole('button', { name: '创建记忆体' }))
-    const dialog = screen.getByRole('dialog', { name: '创建记忆体' })
+    await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
+    fireEvent.click(screen.getByRole('button', { name: '创建记忆仓库' }))
+    const dialog = screen.getByRole('dialog', { name: '创建记忆仓库' })
 
     // FR-4：默认只显示“名字 + 说明”，高级（Provider）折叠
-    expect(within(dialog).getByRole('textbox', { name: '新记忆体名称' })).toBeTruthy()
-    expect(within(dialog).getByRole('textbox', { name: '新记忆体描述' })).toBeTruthy()
+    expect(within(dialog).getByRole('textbox', { name: '新记忆仓库名称' })).toBeTruthy()
+    expect(within(dialog).getByRole('textbox', { name: '新记忆仓库描述' })).toBeTruthy()
     const advanced = dialog.querySelector('details[class*="bodyCreateAdvanced"]')
     if (advanced === null) throw new Error('create form Advanced details missing')
     expect(advanced.hasAttribute('open')).toBe(false)
@@ -1543,10 +1543,10 @@ describe('MnemonView', () => {
     expect(advanced.hasAttribute('open')).toBe(true)
     const mem0Choice = within(dialog).getByRole('radio', { name: /Mem0/ })
     fireEvent.click(mem0Choice)
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆体名称' }), { target: { value: '用户画像' } })
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆体描述' }), { target: { value: '跨会话用户偏好与事实。' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库名称' }), { target: { value: '用户画像' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库描述' }), { target: { value: '跨会话用户偏好与事实。' } })
     fireEvent.click(within(dialog).getByRole('button', { name: '创建' }))
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆体' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆仓库' })).toBeNull())
     expect(call).toHaveBeenCalledWith(expect.anything(), 'body-create', expect.objectContaining({
       providerId: 'mem0',
       connection: expect.objectContaining({ userId: 'dsh-user', agentId: 'dsh', rerank: false }),

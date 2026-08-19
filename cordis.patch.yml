@@ -6,7 +6,7 @@
       name: dsh-song-memory
       config:
         routingGuidance: true
-        displayMode: sidebar
+        displayMode: buildin
         lifecycleEnabled: true
         recallMode: guided
         writebackMode: guided

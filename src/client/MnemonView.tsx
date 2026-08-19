@@ -411,7 +411,7 @@ function MemoryNavigation(props: { page: Page; activationEnabled: boolean; write
   if (!isMemoryPage(props.page)) return null
   return (
     <section className={appearanceClass(css.memoryWorkspace, appearance.classes.memoryWorkspace)}>
-      <PageHeader title={t('nav.memory')} description={t('overview.description')} meta={props.writeEnabled ? t('common.agentSupervised') : props.activationEnabled ? t('common.activationOnly') : t('common.readOnly')} action={<div className={css.memoryHeaderActions}><button type="button" className={appearanceClass(css.primaryButton, appearance.classes.memoryWriteButton)} disabled={!props.writeEnabled} onClick={props.onRemember}>{t('nav.write')}</button><button type="button" className={css.secondaryButton} onClick={props.onStrategy}>{t('strategy.action')}</button></div>} />
+      <PageHeader title={t('nav.memory')} description={t('overview.description')} meta={props.writeEnabled ? t('common.agentSupervised') : props.activationEnabled ? t('common.activationOnly') : t('common.readOnly')} action={<div className={css.memoryHeaderActions}><button type="button" className={appearanceClass(css.primaryButton, appearance.classes.memoryWriteButton)} disabled={!props.writeEnabled} onClick={props.onRemember}>{t('nav.remember')}</button><button type="button" className={css.secondaryButton} onClick={props.onStrategy}>{t('strategy.action')}</button></div>} />
       <div className={appearanceClass(css.memoryNavigation, appearance.classes.memoryNavigation)}>
         <div className={appearanceClass(css.memoryTabs, appearance.classes.memoryTabs)} role="tablist" aria-label={t('nav.memory.aria')}>
           {MEMORY_PAGE_TABS.map(item => {

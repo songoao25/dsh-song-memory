@@ -412,7 +412,7 @@ describe('MnemonView', () => {
     expect(screen.queryByText('后台状态')).toBeNull()
     expect(screen.getByText('/tmp/mnemon')).toBeTruthy()
 
-    // 记忆页内二级：检索 / 内容 / 实体 / 写入 均可达
+    // 记忆页内二级：检索 / 内容 / 实体 / 存入记忆 均可达
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
     const memoryTabs = screen.getByRole('tablist', { name: '记忆仓库页面' })
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '检索' }))
@@ -421,7 +421,7 @@ describe('MnemonView', () => {
     expect(screen.getByRole('heading', { name: '记忆内容' })).toBeTruthy()
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '主题' }))
     expect(screen.getByRole('heading', { name: '主题' })).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: '写入' }))
+    fireEvent.click(screen.getByRole('button', { name: '存入记忆' }))
     expect(screen.getByRole('heading', { name: '存入记忆' })).toBeTruthy()
     expect(screen.getByText('后台 AI 小助手会完成什么')).toBeTruthy()
     expect(screen.getByText('人工高级选项')).toBeTruthy()
@@ -476,7 +476,7 @@ describe('MnemonView', () => {
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
     expect(screen.getByText('仅可切换激活状态')).toBeTruthy()
     await waitFor(() => expect(screen.getByRole('region', { name: '记忆仓库目录' })).toBeTruthy())
-    expect((screen.getByRole('button', { name: '写入' }) as HTMLButtonElement).disabled).toBe(true)
+    expect((screen.getByRole('button', { name: '存入记忆' }) as HTMLButtonElement).disabled).toBe(true)
     expect(screen.queryByRole('button', { name: '创建记忆仓库' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'AI 维护元信息' })).toBeNull()
     expect((screen.getByRole('button', { name: '编辑项目记忆体' }) as HTMLButtonElement).disabled).toBe(true)
@@ -616,7 +616,7 @@ describe('MnemonView', () => {
     const memoryTabs = within(memoryTablist).getAllByRole('tab')
     const overviewTab = within(memoryTablist).getByRole('tab', { name: '概览' })
     const searchTab = within(memoryTablist).getByRole('tab', { name: '检索' })
-    const rememberAction = screen.getByRole('button', { name: '写入' })
+    const rememberAction = screen.getByRole('button', { name: '存入记忆' })
     expect(memoryTabs).toHaveLength(4)
     expect(overviewTab.getAttribute('aria-selected')).toBe('true')
     expect(rememberAction.className).toContain('primaryButton')
@@ -1392,7 +1392,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    fireEvent.click(screen.getByRole('button', { name: '写入' }))
+    fireEvent.click(screen.getByRole('button', { name: '存入记忆' }))
     fireEvent.change(screen.getByRole('textbox', { name: '待存入内容' }), { target: { value: '项目发布前必须通过真实 WebUI 验证。' } })
     fireEvent.click(screen.getByRole('button', { name: '调度后台 AI 小助手判断并存入记忆' }))
 

@@ -5,6 +5,21 @@ All notable changes to this project are documented here. This project adheres to
 
 ---
 
+## [2.1.2] — 2026-08-19
+
+### Changed (settings page layout, Apple HIG-aligned)
+
+- **Section order**: core settings first — 记忆范围 → 存储服务 → 备份与迁移 →
+  后台助手 → 对话界面 → 展示形态 → 来源与命名 (About last).
+- **Origin & naming note moved to the bottom** of the settings page (About /
+  attribution zone per Apple HIG).
+- **Backup & migration** promoted from an embedded block to its own section.
+- **Background assistant (model routing)** now lives in a collapsible panel
+  (expanded by default).
+- Native store row label: `mnemon` → `song memory` in the providers list.
+
+---
+
 ## [2.1.1] — 2026-08-19
 
 ### Added

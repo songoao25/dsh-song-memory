@@ -260,22 +260,6 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
           <p>{t('config.description')}</p>
         </header>
 
-        <section className={css.section} aria-labelledby="mnemon-fork-heading">
-          <div className={css.sectionHeading}>
-            <div><h2 id="mnemon-fork-heading">{t('config.forkTitle')}</h2><p>{t('config.forkNotice')}</p></div>
-          </div>
-        </section>
-
-        <section className={css.section} aria-labelledby="mnemon-display-heading">
-          <div className={css.sectionHeading}>
-            <div><h2 id="mnemon-display-heading">{t('config.displayTitle')}</h2><p>{t('config.displayDescription')}</p></div>
-          </div>
-          <div className={`${css.choiceGrid} ${css.displayGrid}`} role="radiogroup" aria-label={t('config.displayAria')}>
-            <ChoiceCard id="mnemon-display-sidebar" name="mnemon-display" label={t('config.displaySidebar')} detail={t('config.displaySidebarHint')} checked={draft.displayMode === 'sidebar'} disabled={coreDisabled} onChange={() => edit('displayMode', 'sidebar')} />
-            <ChoiceCard id="mnemon-display-buildin" name="mnemon-display" label={t('config.displayBuildin')} detail={t('config.displayBuildinHint')} checked={draft.displayMode === 'buildin'} disabled={coreDisabled} onChange={() => edit('displayMode', 'buildin')} />
-          </div>
-        </section>
-
         <section className={css.section} aria-labelledby="mnemon-storage-heading">
           <div className={css.sectionHeading}>
             <div><h2 id="mnemon-storage-heading">{t('config.storageTitle')}</h2><p>{t('config.storageDescription')}</p></div>
@@ -292,7 +276,7 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
           </div>
           <details className={css.providerPanel} open>
             <summary>
-              <span className={css.providerIdentity}><ProviderIcon providerId="mnemon-native" className={css.nativeMark} /><span><strong>mnemon</strong><small>{t('config.nativeSummary')}</small></span></span>
+              <span className={css.providerIdentity}><ProviderIcon providerId="mnemon-native" className={css.nativeMark} /><span><strong>song memory</strong><small>{t('config.nativeSummary')}</small></span></span>
               <span className={css.providerHeaderMeta}><span className={css.providerScopeTag} data-scope={activeScope}>{t(`config.${activeScope}`)}</span><span className={css.providerState}>{t('config.officialNative')}</span></span>
             </summary>
             <div className={css.providerPanelBody}>
@@ -330,7 +314,6 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
                   </div>
                 </div>
               </GlobalLocationSetting>
-              <MnemonPackSection {...(connection === undefined ? {} : { connection })} {...(sessionId === undefined ? {} : { sessionId })} {...(workspaceId === undefined ? {} : { workspaceId })} refreshKey={targetRevision} t={t} embedded />
             </div>
           </details>
           <ProviderSettingsSection
@@ -346,6 +329,8 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
           />
         </section>
 
+        <MnemonPackSection {...(connection === undefined ? {} : { connection })} {...(sessionId === undefined ? {} : { sessionId })} {...(workspaceId === undefined ? {} : { workspaceId })} refreshKey={targetRevision} t={t} />
+
         <TaskAgentModelSection
           draft={draft}
           catalog={modelCatalog}
@@ -356,6 +341,7 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
           onLoadCatalog={() => loadModelCatalog(true)}
           onEdit={edit}
           onEditMany={editMany}
+          collapsible
           t={t}
         />
 
@@ -366,6 +352,22 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
           <div className={css.rowGroup}>
             <ToggleRow id="mnemon-interaction-turn-bar" label={t('config.interactionTurnBar')} hint={t('config.interactionTurnBarHint')} checked={draft.turnBar} disabled={interactionDisabled} onChange={value => edit('turnBar', value)} />
             <ToggleRow id="mnemon-interaction-save-action" label={t('config.interactionSaveAction')} hint={t('config.interactionSaveActionHint')} checked={draft.saveAction} disabled={interactionDisabled} onChange={value => edit('saveAction', value)} />
+          </div>
+        </section>
+
+        <section className={css.section} aria-labelledby="mnemon-display-heading">
+          <div className={css.sectionHeading}>
+            <div><h2 id="mnemon-display-heading">{t('config.displayTitle')}</h2><p>{t('config.displayDescription')}</p></div>
+          </div>
+          <div className={`${css.choiceGrid} ${css.displayGrid}`} role="radiogroup" aria-label={t('config.displayAria')}>
+            <ChoiceCard id="mnemon-display-sidebar" name="mnemon-display" label={t('config.displaySidebar')} detail={t('config.displaySidebarHint')} checked={draft.displayMode === 'sidebar'} disabled={coreDisabled} onChange={() => edit('displayMode', 'sidebar')} />
+            <ChoiceCard id="mnemon-display-buildin" name="mnemon-display" label={t('config.displayBuildin')} detail={t('config.displayBuildinHint')} checked={draft.displayMode === 'buildin'} disabled={coreDisabled} onChange={() => edit('displayMode', 'buildin')} />
+          </div>
+        </section>
+
+        <section className={css.section} aria-labelledby="mnemon-fork-heading">
+          <div className={css.sectionHeading}>
+            <div><h2 id="mnemon-fork-heading">{t('config.forkTitle')}</h2><p>{t('config.forkNotice')}</p></div>
           </div>
         </section>
 
@@ -396,6 +398,7 @@ function TaskAgentModelSection(props: {
   onLoadCatalog: () => void
   onEdit: (field: Field, value: string | boolean) => void
   onEditMany: (values: Partial<Draft>) => void
+  collapsible?: boolean
   t: MnemonTranslate
 }): JSX.Element {
   const groups = props.catalog?.groups ?? []
@@ -424,44 +427,57 @@ function TaskAgentModelSection(props: {
     props.onEditMany({ taskAgentProvider: provider, taskAgentModel: models[0]?.id ?? '' })
   }
 
-  return <section className={css.section} aria-labelledby="mnemon-task-agent-heading">
+  const heading = (
     <div className={css.sectionHeading}>
       <div><h2 id="mnemon-task-agent-heading">{props.t('config.taskAgentTitle')}</h2><p>{props.t('config.taskAgentDescription')}</p></div>
       {props.state === 'loading' && <span className={css.miniSpinner} aria-hidden="true" />}
     </div>
-    <div className={css.choiceGrid} role="radiogroup" aria-label={props.t('config.taskAgentModeAria')}>
-      <ChoiceCard id="mnemon-task-agent-inherit" name="mnemon-task-agent" label={props.t('config.taskAgentInherit')} detail={props.t('config.taskAgentInheritHint')} checked={props.draft.taskAgentModelMode === 'inherit'} disabled={props.disabled} onChange={() => props.onEditMany({ taskAgentModelMode: 'inherit' })} />
-      <ChoiceCard id="mnemon-task-agent-fixed" name="mnemon-task-agent" label={props.t('config.taskAgentFixed')} detail={props.t('config.taskAgentFixedHint')} checked={props.draft.taskAgentModelMode === 'fixed'} disabled={props.disabled || props.state === 'unavailable'} onChange={chooseFixed} />
-    </div>
-    <div className={css.taskAgentPanel} data-mode={props.draft.taskAgentModelMode}>
-      {props.draft.taskAgentModelMode === 'fixed' && <div className={css.taskAgentFields}>
-        <label>
-          <span><strong>{props.t('config.taskAgentProvider')}</strong><small>{props.t('config.taskAgentProviderHint')}</small></span>
-          <select aria-label={props.t('config.taskAgentProvider')} value={props.draft.taskAgentProvider} disabled={props.disabled || props.state !== 'ready'} onChange={event => chooseProvider(event.target.value)}>
-            <option value="">{props.t('config.taskAgentChooseProvider')}</option>
-            {props.draft.taskAgentProvider !== '' && !groups.some(candidate => candidate.id === props.draft.taskAgentProvider) && <option value={props.draft.taskAgentProvider}>{props.draft.taskAgentProvider}</option>}
-            {groups.map(candidate => <option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}
-          </select>
-        </label>
-        <label>
-          <span><strong>{props.t('config.taskAgentModel')}</strong><small>{props.t('config.taskAgentModelHint')}</small></span>
-          <select aria-label={props.t('config.taskAgentModel')} value={props.draft.taskAgentModel} disabled={props.disabled || props.state !== 'ready' || group === undefined} onChange={event => props.onEdit('taskAgentModel', event.target.value)}>
-            <option value="">{props.t('config.taskAgentChooseModel')}</option>
-            {props.draft.taskAgentModel !== '' && !group?.models.some(model => model.id === props.draft.taskAgentModel) && <option value={props.draft.taskAgentModel}>{props.draft.taskAgentModel}</option>}
-            {(group?.models ?? []).map(model => <option key={model.id} value={model.id}>{model.name}</option>)}
-          </select>
-        </label>
-      </div>}
-      <div className={css.taskAgentEffective}>
-        <span>{props.t('config.taskAgentEffective')}</span>
-        {effective === undefined
-          ? <small>{props.state === 'loading' ? props.t('config.taskAgentLoading') : props.t('config.taskAgentUnavailable')}</small>
-          : <code>{effective.provider} / {effective.model}</code>}
+  )
+  const body = (
+    <>
+      <div className={css.choiceGrid} role="radiogroup" aria-label={props.t('config.taskAgentModeAria')}>
+        <ChoiceCard id="mnemon-task-agent-inherit" name="mnemon-task-agent" label={props.t('config.taskAgentInherit')} detail={props.t('config.taskAgentInheritHint')} checked={props.draft.taskAgentModelMode === 'inherit'} disabled={props.disabled} onChange={() => props.onEditMany({ taskAgentModelMode: 'inherit' })} />
+        <ChoiceCard id="mnemon-task-agent-fixed" name="mnemon-task-agent" label={props.t('config.taskAgentFixed')} detail={props.t('config.taskAgentFixedHint')} checked={props.draft.taskAgentModelMode === 'fixed'} disabled={props.disabled || props.state === 'unavailable'} onChange={chooseFixed} />
       </div>
-      {props.state === 'error' && <p className={css.taskAgentWarning}>{props.t('config.taskAgentLoadFailed', { error: props.error ?? '' })}</p>}
-      {(props.catalog?.failures.length ?? 0) > 0 && groups.length > 0 && <p className={css.taskAgentWarning}>{props.t('config.taskAgentPartial', { count: props.catalog!.failures.length })}</p>}
-    </div>
-  </section>
+      <div className={css.taskAgentPanel} data-mode={props.draft.taskAgentModelMode}>
+        {props.draft.taskAgentModelMode === 'fixed' && <div className={css.taskAgentFields}>
+          <label>
+            <span><strong>{props.t('config.taskAgentProvider')}</strong><small>{props.t('config.taskAgentProviderHint')}</small></span>
+            <select aria-label={props.t('config.taskAgentProvider')} value={props.draft.taskAgentProvider} disabled={props.disabled || props.state !== 'ready'} onChange={event => chooseProvider(event.target.value)}>
+              <option value="">{props.t('config.taskAgentChooseProvider')}</option>
+              {props.draft.taskAgentProvider !== '' && !groups.some(candidate => candidate.id === props.draft.taskAgentProvider) && <option value={props.draft.taskAgentProvider}>{props.draft.taskAgentProvider}</option>}
+              {groups.map(candidate => <option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}
+            </select>
+          </label>
+          <label>
+            <span><strong>{props.t('config.taskAgentModel')}</strong><small>{props.t('config.taskAgentModelHint')}</small></span>
+            <select aria-label={props.t('config.taskAgentModel')} value={props.draft.taskAgentModel} disabled={props.disabled || props.state !== 'ready' || group === undefined} onChange={event => props.onEdit('taskAgentModel', event.target.value)}>
+              <option value="">{props.t('config.taskAgentChooseModel')}</option>
+              {props.draft.taskAgentModel !== '' && !group?.models.some(model => model.id === props.draft.taskAgentModel) && <option value={props.draft.taskAgentModel}>{props.draft.taskAgentModel}</option>}
+              {(group?.models ?? []).map(model => <option key={model.id} value={model.id}>{model.name}</option>)}
+            </select>
+          </label>
+        </div>}
+        <div className={css.taskAgentEffective}>
+          <span>{props.t('config.taskAgentEffective')}</span>
+          {effective === undefined
+            ? <small>{props.state === 'loading' ? props.t('config.taskAgentLoading') : props.t('config.taskAgentUnavailable')}</small>
+            : <code>{effective.provider} / {effective.model}</code>}
+        </div>
+        {props.state === 'error' && <p className={css.taskAgentWarning}>{props.t('config.taskAgentLoadFailed', { error: props.error ?? '' })}</p>}
+        {(props.catalog?.failures.length ?? 0) > 0 && groups.length > 0 && <p className={css.taskAgentWarning}>{props.t('config.taskAgentPartial', { count: props.catalog!.failures.length })}</p>}
+      </div>
+    </>
+  )
+  if (props.collapsible === true) {
+    return <section className={css.section} aria-labelledby="mnemon-task-agent-heading">
+      <details className={css.providerPanel} open>
+        <summary>{heading}</summary>
+        <div className={css.providerPanelBody}>{body}</div>
+      </details>
+    </section>
+  }
+  return <section className={css.section} aria-labelledby="mnemon-task-agent-heading">{heading}{body}</section>
 }
 
 function ChoiceCard(props: { id: string; name: string; label: string; detail: string; checked: boolean; disabled: boolean; onChange: () => void }): JSX.Element {

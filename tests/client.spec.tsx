@@ -399,7 +399,7 @@ describe('MnemonView', () => {
     expect(screen.queryByRole('heading', { name: '子 Agent 生命周期' })).toBeNull()
     expect(screen.queryByRole('heading', { name: '记忆系统流转' })).toBeNull()
     expect(screen.getByRole('heading', { name: '三方存储服务' })).toBeTruthy()
-    const nativeProviderStatus = screen.getByRole('region', { name: 'mnemon 存储服务状态' })
+    const nativeProviderStatus = screen.getByRole('region', { name: 'song memory 原生存储状态' })
     const providerStatus = screen.getByRole('region', { name: '三方存储服务状态' })
     expect(within(nativeProviderStatus).getByText('mnemon')).toBeTruthy()
     expect(nativeProviderStatus.compareDocumentPosition(providerStatus) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
@@ -437,7 +437,7 @@ describe('MnemonView', () => {
     expect(screen.getByText('系统正常')).toBeTruthy()
     expect(screen.queryByText('song memory 不可用')).toBeNull()
 
-    const nativeStatus = screen.getByRole('region', { name: 'mnemon 存储服务状态' })
+    const nativeStatus = screen.getByRole('region', { name: 'song memory 原生存储状态' })
     expect(within(nativeStatus).getByText('连接需要检查')).toBeTruthy()
     expect(within(nativeStatus).getByText('项目记忆体: Mnemon Store 无法打开')).toBeTruthy()
   })

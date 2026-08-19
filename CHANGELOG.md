@@ -5,6 +5,23 @@ All notable changes to this project are documented here. This project adheres to
 
 ---
 
+## [2.1.1] — 2026-08-19
+
+### Added
+
+- **Settings-page origin & naming note**: the settings page now states that
+  song memory is a UI-redesign fork of `dsh-mnemon` (MIT, © 2026
+  dsh-external contributors) and explains that `~/.mnemon`, the `mnemon` CLI
+  and the `.mnemonpack` format keep their upstream technical names for data and
+  backup compatibility.
+
+### Changed (UI / wording only)
+
+- Status page native-store label: `mnemon 存储服务状态` → `song memory 原生存储状态`
+  (zh) / `Song Memory native storage status` (en).
+
+---
+
 ## [2.1.0] — 2026-08-19
 
 Plain-language **settings page** and full **song memory** rebrand. Engine still

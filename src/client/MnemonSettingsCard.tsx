@@ -260,6 +260,12 @@ export function MnemonSettingsCard({ scope, interactionScope: suppliedInteractio
           <p>{t('config.description')}</p>
         </header>
 
+        <section className={css.section} aria-labelledby="mnemon-fork-heading">
+          <div className={css.sectionHeading}>
+            <div><h2 id="mnemon-fork-heading">{t('config.forkTitle')}</h2><p>{t('config.forkNotice')}</p></div>
+          </div>
+        </section>
+
         <section className={css.section} aria-labelledby="mnemon-display-heading">
           <div className={css.sectionHeading}>
             <div><h2 id="mnemon-display-heading">{t('config.displayTitle')}</h2><p>{t('config.displayDescription')}</p></div>

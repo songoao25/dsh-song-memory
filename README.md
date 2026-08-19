@@ -3,11 +3,18 @@
 <p align="center"><strong>English</strong> · <a href="./README.zh-CN.md">简体中文</a></p>
 
 <p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-172033" alt="MIT license"></a>
   <img src="https://img.shields.io/github/v/release/songoao25/dsh-song-memory" alt="release">
+  <img src="https://img.shields.io/github/actions/workflow/status/songoao25/dsh-song-memory/ci.yml?branch=main" alt="CI">
+  <img src="https://img.shields.io/github/last-commit/songoao25/dsh-song-memory" alt="last commit">
+  <img src="https://img.shields.io/github/stars/songoao25/dsh-song-memory" alt="stars">
+  <img src="https://img.shields.io/badge/Dependabot-enabled-025e8c" alt="Dependabot enabled">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/memory-3%20tiers-087c5b" alt="three memory tiers">
   <img src="https://img.shields.io/badge/providers-9-c66a09" alt="nine providers">
   <img src="https://img.shields.io/badge/Node.js-%E2%89%A520-43853d" alt="Node.js 20 or newer">
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-172033" alt="MIT license"></a>
 </p>
 
 <p align="center"><strong>DeepSeek Harness 的「三层、可插拔、Agent 驱动」记忆系统 —— 界面已重做成大白话。</strong></p>

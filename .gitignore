@@ -11,5 +11,6 @@ coverage/
 # Mnemon workspace-local data
 /.mnemon/
 
-# Internal audit & planning docs (kept local, not uploaded)
-docs-v2/AUDIT-*.md
+# Internal planning & audit docs (kept local, not uploaded)
+docs-v2/
+DEVELOPMENT-PROMPT.md

@@ -3,7 +3,7 @@
 <p align="center"><a href="./README.md">English</a> · <strong>简体中文</strong></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/release-v2.0.0-5b5bd6" alt="发布版本 v2.0.0">
+  <img src="https://img.shields.io/github/v/release/songoao25/dsh-song-memory" alt="发布版本">
   <img src="https://img.shields.io/badge/%E8%AE%B0%E5%BF%86-3%20%E5%B1%82-087c5b" alt="三层记忆">
   <img src="https://img.shields.io/badge/Provider-9-c66a09" alt="九种 Provider">
   <img src="https://img.shields.io/badge/Node.js-%E2%89%A520-43853d" alt="Node.js 20 或更新版本">

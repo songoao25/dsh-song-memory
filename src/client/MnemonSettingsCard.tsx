@@ -52,7 +52,7 @@ function coreDraft(value: Config | undefined): Pick<Draft, CoreField | TaskAgent
   const resolved = value ?? {}
   const dataDir = resolved.dataDir?.trim() || legacyPackDirectory(resolved)
   return {
-    displayMode: resolved.displayMode ?? 'sidebar',
+    displayMode: resolved.displayMode ?? 'buildin',
     storageScope: resolved.storageScope ?? (dataDir === '' ? 'global' : 'custom'),
     dataDir,
     taskAgentModelMode: resolved.taskAgentModel?.mode === 'fixed' ? 'fixed' : 'inherit',

@@ -319,7 +319,7 @@ describe('MnemonView', () => {
 
     // PRD-v2.0 四大白话导航：4 个一级标签
     expect(screen.getByRole('button', { name: /^记忆 记忆仓库、检索与关系图/ })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /^常用小抄 关于我、关于项目的常用小抄/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /^常用信息 关于我、关于项目的常用信息/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^项目文档 项目知识、交付与归档/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^运行状态 运行与诊断/ })).toBeTruthy()
 
@@ -362,13 +362,13 @@ describe('MnemonView', () => {
     fireEvent.keyDown(graphNode, { key: 'ArrowRight' })
     expect(screen.getByRole('status', { name: '布局状态：自定义布局' })).toBeTruthy()
 
-    // 常用小抄 = 原运行时页（分类改“关于我/关于项目”）
-    fireEvent.click(screen.getByRole('button', { name: /^常用小抄 / }))
-    expect(screen.getByRole('heading', { name: '常用小抄' })).toBeTruthy()
+    // 常用信息 = 原运行时页（分类改“关于我/关于项目”）
+    fireEvent.click(screen.getByRole('button', { name: /^常用信息 / }))
+    expect(screen.getByRole('heading', { name: '常用信息' })).toBeTruthy()
     await waitFor(() => expect(screen.getByText('用户偏好简洁中文回答。')).toBeTruthy())
     expect(screen.getByRole('region', { name: '关于我' })).toBeTruthy()
     expect(screen.getByRole('region', { name: '关于项目' })).toBeTruthy()
-    fireEvent.change(screen.getByRole('textbox', { name: '常用小抄内容' }), { target: { value: '项目默认使用 pnpm。' } })
+    fireEvent.change(screen.getByRole('textbox', { name: '常用信息内容' }), { target: { value: '项目默认使用 pnpm。' } })
     fireEvent.click(screen.getByRole('button', { name: '添加' }))
     await waitFor(() => expect(screen.getByText('项目默认使用 pnpm。')).toBeTruthy())
 
@@ -415,7 +415,7 @@ describe('MnemonView', () => {
     // 记忆页内二级：检索 / 内容 / 实体 / 存入记忆 均可达
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
     const memoryTabs = screen.getByRole('tablist', { name: '记忆仓库页面' })
-    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '搜索' }))
     expect(screen.getByRole('heading', { name: '检索记忆' })).toBeTruthy()
     fireEvent.click(within(memoryTabs).getByRole('tab', { name: '内容' }))
     expect(screen.getByRole('heading', { name: '记忆内容' })).toBeTruthy()
@@ -512,7 +512,7 @@ describe('MnemonView', () => {
     expect(document.querySelector('[data-kind="space"][data-provider="mnemon-native"]')).toBeTruthy()
 
     const memoryTabs = screen.getByRole('tablist', { name: '记忆仓库页面' })
-    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(memoryTabs).getByRole('tab', { name: '搜索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
     const recallSources = await screen.findByRole('region', { name: '本次检索范围' })
@@ -592,11 +592,11 @@ describe('MnemonView', () => {
     const tablist = screen.getByRole('tablist', { name: 'song memory 页面' })
     const tabs = within(tablist).getAllByRole('tab')
     const statusTab = within(tablist).getByRole('tab', { name: '运行状态' })
-    const runtimeTab = within(tablist).getByRole('tab', { name: '常用小抄' })
+    const runtimeTab = within(tablist).getByRole('tab', { name: '常用信息' })
     const bodiesTab = within(tablist).getByRole('tab', { name: '记忆' })
     const documentsTab = within(tablist).getByRole('tab', { name: '项目文档' })
     expect(tabs).toHaveLength(4)
-    expect(tabs.map(tab => tab.textContent)).toEqual(['记忆', '常用小抄', '项目文档', '运行状态'])
+    expect(tabs.map(tab => tab.textContent)).toEqual(['记忆', '常用信息', '项目文档', '运行状态'])
     expect(statusTab.getAttribute('aria-selected')).toBe('true')
     expect(statusTab.hasAttribute('data-active')).toBe(true)
     expect(bodiesTab.getAttribute('aria-selected')).toBe('false')
@@ -615,7 +615,7 @@ describe('MnemonView', () => {
     const memoryTablist = screen.getByRole('tablist', { name: '记忆仓库页面' })
     const memoryTabs = within(memoryTablist).getAllByRole('tab')
     const overviewTab = within(memoryTablist).getByRole('tab', { name: '概览' })
-    const searchTab = within(memoryTablist).getByRole('tab', { name: '检索' })
+    const searchTab = within(memoryTablist).getByRole('tab', { name: '搜索' })
     const rememberAction = screen.getByRole('button', { name: '存入记忆' })
     expect(memoryTabs).toHaveLength(4)
     expect(overviewTab.getAttribute('aria-selected')).toBe('true')
@@ -680,29 +680,29 @@ describe('MnemonView', () => {
     fireEvent.click(runtimeTab)
     expect(canvas.hasAttribute('data-lock-page-header')).toBe(true)
     fireEvent.click(screen.getByRole('button', { name: '添加记忆' }))
-    const runtimeDialog = screen.getByRole('dialog', { name: '添加常用小抄' })
-    expect(within(runtimeDialog).getByRole('textbox', { name: '常用小抄内容' })).toBeTruthy()
+    const runtimeDialog = screen.getByRole('dialog', { name: '添加常用信息' })
+    expect(within(runtimeDialog).getByRole('textbox', { name: '常用信息内容' })).toBeTruthy()
     const runtimeCancel = within(runtimeDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (runtimeCancel === undefined) throw new Error('runtime cancel button missing')
     fireEvent.click(runtimeCancel)
-    expect(screen.queryByRole('dialog', { name: '添加常用小抄' })).toBeNull()
-    const runtimeList = screen.getByRole('region', { name: '常用小抄列表' })
-    expect(within(runtimeList).getByRole('group', { name: '常用小抄范围' })).toBeTruthy()
-    expect(within(runtimeList).getByRole('textbox', { name: '筛选常用小抄' })).toBeTruthy()
+    expect(screen.queryByRole('dialog', { name: '添加常用信息' })).toBeNull()
+    const runtimeList = screen.getByRole('region', { name: '常用信息列表' })
+    expect(within(runtimeList).getByRole('group', { name: '常用信息范围' })).toBeTruthy()
+    expect(within(runtimeList).getByRole('textbox', { name: '筛选常用信息' })).toBeTruthy()
     fireEvent.click(await within(runtimeList).findByRole('button', { name: '编辑' }))
-    const runtimeEditDialog = screen.getByRole('dialog', { name: '编辑常用小抄' })
-    expect(within(runtimeEditDialog).getByRole('textbox', { name: '编辑常用小抄' })).toBeTruthy()
+    const runtimeEditDialog = screen.getByRole('dialog', { name: '编辑常用信息' })
+    expect(within(runtimeEditDialog).getByRole('textbox', { name: '编辑常用信息' })).toBeTruthy()
     const runtimeEditCancel = within(runtimeEditDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (runtimeEditCancel === undefined) throw new Error('runtime edit cancel button missing')
     fireEvent.click(runtimeEditCancel)
-    expect(screen.queryByRole('dialog', { name: '编辑常用小抄' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '编辑常用信息' })).toBeNull()
     fireEvent.click(within(runtimeList).getByRole('button', { name: '移除' }))
-    const runtimeRemoveDialog = screen.getByRole('dialog', { name: '移除常用小抄？' })
+    const runtimeRemoveDialog = screen.getByRole('dialog', { name: '移除常用信息？' })
     expect(within(runtimeRemoveDialog).getByText(/不再随每轮上下文加载/)).toBeTruthy()
     const runtimeRemoveCancel = within(runtimeRemoveDialog).getAllByRole('button', { name: '取消' }).at(-1)
     if (runtimeRemoveCancel === undefined) throw new Error('runtime remove cancel button missing')
     fireEvent.click(runtimeRemoveCancel)
-    expect(screen.queryByRole('dialog', { name: '移除常用小抄？' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: '移除常用信息？' })).toBeNull()
 
     fireEvent.click(bodiesTab)
     expect(canvas.hasAttribute('data-lock-page-header')).toBe(false)
@@ -907,7 +907,7 @@ describe('MnemonView', () => {
     fireEvent.click(action)
 
     const dialog = screen.getByRole('dialog', { name: 'AI 维护记忆仓库元信息' })
-    expect(within(dialog).queryByText('暂时无法运行：未找到与当前记忆范围匹配的活跃 Agent')).toBeNull()
+    expect(within(dialog).queryByText('暂时无法运行：未找到与当前存储位置匹配的活跃 Agent')).toBeNull()
     fireEvent.click(within(dialog).getByRole('checkbox', { name: /项目记忆体/ }))
     expect(within(dialog).getByRole('button', { name: 'AI 生成（1）' }).hasAttribute('disabled')).toBe(false)
   })
@@ -952,7 +952,7 @@ describe('MnemonView', () => {
     expect(openVikingChoice.closest('label')?.hasAttribute('data-selected')).toBe(true)
     fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库名称' }), { target: { value: '团队 OpenViking' } })
     fireEvent.change(within(dialog).getByRole('textbox', { name: '新记忆仓库描述' }), { target: { value: '跨项目共享的团队长期记忆。' } })
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '记忆范围 URI' }), { target: { value: 'viking://user/team/memories' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '存储位置 URI' }), { target: { value: 'viking://user/team/memories' } })
     fireEvent.click(within(dialog).getByRole('button', { name: '创建' }))
 
     await waitFor(() => expect(screen.queryByRole('dialog', { name: '创建记忆仓库' })).toBeNull())
@@ -994,7 +994,7 @@ describe('MnemonView', () => {
     fireEvent.click(openVikingCandidate)
     expect(exactWrite.closest('label')?.hasAttribute('data-selected')).toBe(true)
     expect(openVikingCandidate.closest('label')?.hasAttribute('data-selected')).toBe(true)
-    fireEvent.change(within(dialog).getByRole('textbox', { name: '记忆范围 URI' }), { target: { value: 'viking://user/team/memories' } })
+    fireEvent.change(within(dialog).getByRole('textbox', { name: '存储位置 URI' }), { target: { value: 'viking://user/team/memories' } })
     fireEvent.click(within(dialog).getByRole('button', { name: '保存' }))
 
     await waitFor(() => expect(screen.queryByRole('dialog', { name: '自动存入策略' })).toBeNull())
@@ -1117,10 +1117,10 @@ describe('MnemonView', () => {
     const { rerender } = render(view('workspace-1'))
 
     await waitFor(() => expect(screen.getByText('已连接')).toBeTruthy())
-    fireEvent.click(screen.getByRole('tab', { name: '常用小抄' }))
-    const oldRuntime = await screen.findByRole('region', { name: '常用小抄列表' })
+    fireEvent.click(screen.getByRole('tab', { name: '常用信息' }))
+    const oldRuntime = await screen.findByRole('region', { name: '常用信息列表' })
     await waitFor(() => expect(within(oldRuntime).getByText('运行时条目 1')).toBeTruthy())
-    fireEvent.change(within(oldRuntime).getByRole('textbox', { name: '筛选常用小抄' }), { target: { value: '条目 1' } })
+    fireEvent.change(within(oldRuntime).getByRole('textbox', { name: '筛选常用信息' }), { target: { value: '条目 1' } })
     const oldCanvas = screen.getByTestId('mnemon-canvas')
     oldCanvas.scrollTop = 240
 
@@ -1130,7 +1130,7 @@ describe('MnemonView', () => {
     expect(newCanvas).not.toBe(oldCanvas)
     expect(newCanvas.scrollTop).toBe(0)
     expect(screen.queryByText('运行时条目 1')).toBeNull()
-    expect((screen.getByRole('textbox', { name: '筛选常用小抄' }) as HTMLInputElement).value).toBe('')
+    expect((screen.getByRole('textbox', { name: '筛选常用信息' }) as HTMLInputElement).value).toBe('')
     expect(screen.getByLabelText('存储位置模式：自定义')).toBeTruthy()
     await waitFor(() => expect(delayedCall).toHaveBeenCalledWith(expect.anything(), 'status', expect.objectContaining({ workspaceId: 'workspace-2' })))
   })
@@ -1176,11 +1176,11 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={liveSettingsScope} sessionId="session-1" surface="sidebar" />)
 
     await waitFor(() => expect(screen.getByText('已连接')).toBeTruthy())
-    fireEvent.click(screen.getByRole('tab', { name: '常用小抄' }))
+    fireEvent.click(screen.getByRole('tab', { name: '常用信息' }))
     await waitFor(() => expect(screen.getByText('运行时条目 1')).toBeTruthy())
     const oldCanvas = screen.getByTestId('mnemon-canvas')
     oldCanvas.scrollTop = 240
-    fireEvent.change(screen.getByRole('textbox', { name: '筛选常用小抄' }), { target: { value: '运行时条目' } })
+    fireEvent.change(screen.getByRole('textbox', { name: '筛选常用信息' }), { target: { value: '运行时条目' } })
 
     settingsGeneration = 1
     snapshot = { ...snapshot, value: { storageScope: 'global' }, revision: 1 }
@@ -1190,7 +1190,7 @@ describe('MnemonView', () => {
     expect(screen.getByTestId('mnemon-canvas').scrollTop).toBe(0)
     expect(screen.getByLabelText('存储位置模式：全局')).toBeTruthy()
     expect(screen.queryByText('运行时条目 1')).toBeNull()
-    expect((screen.getByRole('textbox', { name: '筛选常用小抄' }) as HTMLInputElement).value).toBe('')
+    expect((screen.getByRole('textbox', { name: '筛选常用信息' }) as HTMLInputElement).value).toBe('')
 
     releaseNextGeneration()
     await waitFor(() => expect(screen.getByText('全局目录实时加载的运行时记忆。')).toBeTruthy())
@@ -1226,7 +1226,7 @@ describe('MnemonView', () => {
     const hostScrollport = screen.getByTestId('dsh-host-scrollport')
     hostScrollport.scrollTop = 240
     canvas.scrollTop = 900
-    fireEvent.click(screen.getByRole('button', { name: /^常用小抄 / }))
+    fireEvent.click(screen.getByRole('button', { name: /^常用信息 / }))
     expect(canvas.scrollTop).toBe(0)
     expect(hostScrollport.scrollTop).toBe(240)
     canvas.scrollTop = 900
@@ -1256,18 +1256,18 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
     await waitFor(() => expect(screen.getByText('已连接')).toBeTruthy())
 
-    fireEvent.click(screen.getByRole('tab', { name: '常用小抄' }))
-    const runtimeList = await screen.findByRole('region', { name: '常用小抄列表' })
+    fireEvent.click(screen.getByRole('tab', { name: '常用信息' }))
+    const runtimeList = await screen.findByRole('region', { name: '常用信息列表' })
     await waitFor(() => expect(within(runtimeList).getByText('当前显示 10 / 23')).toBeTruthy())
     expect(within(runtimeList).queryByText('运行时条目 11')).toBeNull()
     fireEvent.click(within(runtimeList).getByRole('button', { name: '再显示 10 条' }))
     expect(within(runtimeList).getByText('运行时条目 20')).toBeTruthy()
-    fireEvent.change(within(runtimeList).getByRole('textbox', { name: '筛选常用小抄' }), { target: { value: '运行时条目 21' } })
+    fireEvent.change(within(runtimeList).getByRole('textbox', { name: '筛选常用信息' }), { target: { value: '运行时条目 21' } })
     expect(within(runtimeList).getByText('当前显示 1 / 1')).toBeTruthy()
     expect(within(runtimeList).getByText('运行时条目 21')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('tab', { name: '记忆' }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '搜索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
     await waitFor(() => expect(screen.getByText('当前显示 6 / 15')).toBeTruthy())
@@ -1327,7 +1327,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '搜索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: '直接检索' }))
     await waitFor(() => expect(screen.getByText('项目选择 SQLite，因为需要单文件部署。')).toBeTruthy())
@@ -1347,7 +1347,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     fireEvent.click(screen.getByRole('button', { name: /^记忆 / }))
-    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '检索' }))
+    fireEvent.click(within(screen.getByRole('tablist', { name: '记忆仓库页面' })).getByRole('tab', { name: '搜索' }))
     fireEvent.change(screen.getByRole('textbox', { name: '记忆查询' }), { target: { value: 'SQLite' } })
     fireEvent.click(screen.getByRole('button', { name: 'Agent 查询' }))
 
@@ -1471,7 +1471,7 @@ describe('MnemonView', () => {
 
     await waitFor(() => expect(screen.getByText('Connected · 1 active')).toBeTruthy())
     expect(screen.getByRole('button', { name: /^Memory Memory Stores, search and relation map/ })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /^Cheat Sheet Cheatsheet about me and the project/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /^Frequent Info Frequent Info about me and the project/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^Project Docs Project knowledge, handoff and archive/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^Runtime Status Runtime and diagnostics/ })).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /^Memory / }))
@@ -1498,7 +1498,7 @@ describe('MnemonView', () => {
     await waitFor(() => expect(screen.getByText('已连接 · 1 个已激活')).toBeTruthy())
 
     // 4 个一级标签都存在
-    for (const label of ['记忆', '常用小抄', '项目文档', '运行状态']) {
+    for (const label of ['记忆', '常用信息', '项目文档', '运行状态']) {
       expect(screen.getByRole('button', { name: new RegExp(`^${label} `) })).toBeTruthy()
     }
 
@@ -1515,7 +1515,7 @@ describe('MnemonView', () => {
     dispatchMnemonAnchor({ page: 'documents', sessionId: 'session-1' })
     await waitFor(() => expect(screen.getByRole('heading', { name: '项目文档' })).toBeTruthy())
     dispatchMnemonAnchor({ page: 'runtime', sessionId: 'session-1' })
-    await waitFor(() => expect(screen.getByRole('heading', { name: '常用小抄' })).toBeTruthy())
+    await waitFor(() => expect(screen.getByRole('heading', { name: '常用信息' })).toBeTruthy())
     dispatchMnemonAnchor({ page: 'status', sessionId: 'session-1' })
     await waitFor(() => expect(screen.getByRole('heading', { name: '系统状态' })).toBeTruthy())
     dispatchMnemonAnchor({ page: 'overview', sessionId: 'session-1' })

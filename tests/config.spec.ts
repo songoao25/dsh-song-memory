@@ -20,7 +20,7 @@ describe('Mnemon config and resolution', () => {
         maxUnknownResults: 2,
       },
       routingGuidance: true,
-      displayMode: 'sidebar',
+      displayMode: 'buildin',
       lifecycleEnabled: true,
       recallMode: 'guided',
       writebackMode: 'guided',
@@ -108,8 +108,8 @@ describe('Mnemon config and resolution', () => {
       .toMatchObject({ turnBar: false, saveAction: false })
   })
 
-  it('supports sidebar and buildin display modes with sidebar as the default', () => {
-    expect(resolveConfig({}).displayMode).toBe('sidebar')
+  it('supports sidebar and buildin display modes with the conversation-area tab as the default', () => {
+    expect(resolveConfig({}).displayMode).toBe('buildin')
     expect(resolveConfig({ displayMode: 'buildin' }).displayMode).toBe('buildin')
   })
 

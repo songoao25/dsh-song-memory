@@ -20,6 +20,25 @@ All notable changes to this project are documented here. This project adheres to
 
 ---
 
+## [2.2.0] — 2026-08-19
+
+### Added / Changed (UI, Apple HIG-aligned)
+
+- **Memory system page next to the conversation overview**: the built-in
+  conversation-area tab (信息概览旁的记忆系统页) is now the **default display
+  mode** (`displayMode: buildin`); it was previously hidden behind the sidebar
+  default.
+- **Settings page renamed to 记忆系统** (was 记忆系统设置), matching the
+  sidebar / tab label — one name everywhere.
+- **Display option de-jargoned**: 展示形态 → 记忆页面位置, options
+  Sidebar/Buildin → 侧边栏 / 对话区标签页 (en: Built-in tab, typo fixed).
+- **Plain-language renames**: 常用小抄 → 常用信息, 检索 → 搜索,
+  记忆范围 → 存储位置, 记忆仓库存储服务 → 存储服务, 对话界面 → 对话中显示,
+  备份与迁移 → 备份.
+- **Turn bar labeled 记忆系统 · 本回合记忆**.
+
+---
+
 ## [2.1.1] — 2026-08-19
 
 ### Added

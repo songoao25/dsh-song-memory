@@ -87,7 +87,7 @@ describe('MnemonSettingsCard', () => {
     render(<MnemonSettingsCard scope={scope} connection={connection} />)
 
     await waitFor(() => expect(call).toHaveBeenCalledWith('/dsh-mnemon-read', 'task-agent-models', { includeCatalog: false }))
-    expect((screen.getByRole('radio', { name: 'Sidebar' }) as HTMLInputElement).disabled).toBe(false)
+    expect((screen.getByRole('radio', { name: '侧边栏' }) as HTMLInputElement).disabled).toBe(false)
     expect((screen.getByRole('radio', { name: '跟随主链路' }) as HTMLInputElement).disabled).toBe(false)
     expect(screen.queryByText('当前部署的插件设置为只读。')).toBeNull()
     await waitFor(() => expect(call.mock.calls.some(([, endpoint]) => endpoint === 'provider-services')).toBe(true))
@@ -240,7 +240,7 @@ describe('MnemonSettingsCard', () => {
     expect(call).toHaveBeenCalledWith('/dsh-mnemon-read', 'task-agent-models', { includeCatalog: true })
   })
 
-  it('defaults to sidebar and persists a buildin display-mode selection', async () => {
+  it('defaults to the conversation-area tab and persists a sidebar selection', async () => {
     const mutate = vi.fn(async () => {})
     const snapshot = {
       status: 'ready' as const,
@@ -257,12 +257,12 @@ describe('MnemonSettingsCard', () => {
 
     render(<MnemonSettingsCard scope={scope} />)
 
-    expect((screen.getByRole('radio', { name: 'Sidebar' }) as HTMLInputElement).checked).toBe(true)
-    fireEvent.click(screen.getByRole('radio', { name: 'Buildin' }))
+    expect((screen.getByRole('radio', { name: '对话区标签页' }) as HTMLInputElement).checked).toBe(true)
+    fireEvent.click(screen.getByRole('radio', { name: '侧边栏' }))
     fireEvent.click(screen.getByRole('button', { name: '保存' }))
 
     await waitFor(() => expect(mutate).toHaveBeenCalledWith([
-      { op: 'set', path: ['displayMode'], value: 'buildin' },
+      { op: 'set', path: ['displayMode'], value: 'sidebar' },
     ]))
   })
 
@@ -713,7 +713,7 @@ describe('MnemonSettingsCard', () => {
     fireEvent.click(screen.getByText('OpenViking'))
     expect(disclosure.getAttribute('aria-expanded')).toBe('true')
     expect((screen.getByLabelText('服务地址') as HTMLInputElement).value).toBe('http://127.0.0.1:1933')
-    expect(screen.queryByLabelText('记忆范围 URI')).toBeNull()
+    expect(screen.queryByLabelText('存储位置 URI')).toBeNull()
     expect(screen.queryByLabelText('记忆仓库名称')).toBeNull()
     expect(screen.queryByRole('checkbox', { name: '清除已保存的凭据' })).toBeNull()
     const apiKey = screen.getByLabelText('API Key') as HTMLInputElement

@@ -88,7 +88,7 @@
     }
   },
   "scripts": {
-    "build": "tsdown && tsc -p tsconfig.types.json",
+    "build": "tsdown && tsc -p tsconfig.types.json && node scripts/strip-build-paths.mjs",
     "bundle": "tsdown",
     "prepublishOnly": "pnpm run verify",
     "lint:package": "publint --strict && attw --pack . --profile esm-only --quiet",

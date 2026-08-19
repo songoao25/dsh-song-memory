@@ -49,9 +49,10 @@ jobs:
         run: pnpm run verify
 
       - name: Pack release
-        run: npm pack --ignore-scripts
+        id: pack
+        run: echo "filename=$(npm pack --ignore-scripts --silent)" >> "$GITHUB_OUTPUT"
 
       - name: Publish packed release
-        run: npm publish "dsh-mnemon-$(node --print "require('./package.json').version").tgz" --access public --ignore-scripts
+        run: npm publish "${{ steps.pack.outputs.filename }}" --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -4,10 +4,9 @@ import { zh, en } from '../src/client/locales.ts'
 
 /**
  * PRD-v2.0 附录 A 术语对照表回归测试：
- * 用户可见文案（非高级设置区）禁止出现旧术语。config.* 命名空间是高级设置区
- * （Provider 服务配置等），按 PRD「设置高级区除外」豁免。
+ * 用户可见文案（含设置页 config.*）禁止出现旧术语。设置页已于 v2.1 白话化，
+ * config.* 命名空间不再豁免。
  */
-const ADVANCED_PREFIX = 'config.'
 
 // zh 禁词：附录 A 旧术语（含「等」字覆盖的 策略/配置/Provider/任务 Agent 等）
 const ZH_BANNED = [
@@ -50,10 +49,9 @@ const EN_BANNED: Array<[RegExp, string]> = [
 ]
 
 describe('PRD-v2.0 术语全白话回归', () => {
-  it('zh 词典的用户可见 key 不出现旧术语（config.* 高级设置区除外）', () => {
+  it('zh 词典的用户可见 key 不出现旧术语（含设置页 config.*）', () => {
     const hits: Array<[string, string, string]> = []
     for (const [key, value] of Object.entries(zh)) {
-      if (key.startsWith(ADVANCED_PREFIX)) continue
       for (const word of ZH_BANNED) {
         if (value.includes(word)) hits.push([key, word, value])
       }
@@ -67,10 +65,9 @@ describe('PRD-v2.0 术语全白话回归', () => {
     expect(hits).toEqual([])
   })
 
-  it('en 词典与 zh 同步，用户可见 key 不出现旧术语', () => {
+  it('en 词典与 zh 同步，用户可见 key 不出现旧术语（含设置页 config.*）', () => {
     const hits: Array<[string, string, string]> = []
     for (const [key, value] of Object.entries(en)) {
-      if (key.startsWith(ADVANCED_PREFIX)) continue
       // 插值占位符（{provider} 等）是传给组件渲染的参数名，不是用户可见文案
       const visible = value.replace(/\{[a-zA-Z]+\}/g, '')
       for (const [re, word] of EN_BANNED) {

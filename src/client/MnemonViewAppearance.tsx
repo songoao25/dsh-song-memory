@@ -48,7 +48,7 @@ export interface MnemonViewAppearance {
 
 const buildinAppearance: MnemonViewAppearance = {
   surface: 'buildin',
-  title: 'Mnemon',
+  title: 'song memory',
   showLogo: true,
   showTelemetry: true,
   showNavigationGlyphs: true,

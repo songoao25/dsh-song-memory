@@ -215,7 +215,7 @@ What the redesign changed (philosophy: Apple HIG — defaults simple, advanced o
   - 运行状态 (Status / runtime & diagnostics) ← 状态
 - **Inside 记忆**: 概览 / 检索 / 内容 / 实体 + 存入记忆 (was 写入) + 策略. The smart/guided recall mode is **on by default**.
 - **「存入记忆」unified flow**: one button (or "帮我记住…") lets AI decide worthiness, routing, and dedup — no technical choices required for everyday saves.
-- **Dead-key / jargon cleanup**: terms like 记忆体 / 沉淀 / 召回 / Provider / 存储域 were replaced with plain Chinese across the main UI (advanced/settings area retains upstream wording by design).
+- **Dead-key / jargon cleanup**: terms like 记忆体 / 沉淀 / 召回 / Provider / 存储域 were replaced with plain Chinese across the main UI **and the settings page (config.\*) alike** (记忆体 → 记忆仓库, Provider → 存储服务 / 模型服务, 任务 Agent → 后台助手, etc.).
 - **All 14 upstream feature modules remain reachable** from the four plain tabs — functionality is identical to upstream; only the interface was reworded.
 
 The engine documentation under `./docs/en/` and `./docs/zh-CN/` is inherited from upstream `dsh-mnemon` and describes the shared, unchanged engine; the UI wording in those docs may differ from this fork's plain-language labels.

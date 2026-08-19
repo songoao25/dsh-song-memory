@@ -49,7 +49,7 @@ describe('MnemonSettingsCard', () => {
 
     view.rerender(<MnemonSettingsCard scope={scope} connection={connection} workspaceId="workspace-2" workspaceLabel="Two" />)
     await waitFor(() => expect(call).toHaveBeenCalledWith('/dsh-mnemon-write', 'provider-services', { workspaceId: 'workspace-2' }))
-    const providerGroup = await screen.findByRole('group', { name: 'OpenViking 服务配置' }, { timeout: 5_000 })
+    const providerGroup = await screen.findByRole('group', { name: 'OpenViking 服务设置' }, { timeout: 5_000 })
     fireEvent.click(within(providerGroup).getByRole('button'))
     await waitFor(() => expect((screen.getByLabelText('服务地址') as HTMLInputElement).value).toBe('https://workspace-2.example'), { timeout: 5_000 })
 
@@ -142,9 +142,9 @@ describe('MnemonSettingsCard', () => {
     expect((screen.getByRole('radio', { name: '跟随主链路' }) as HTMLInputElement).checked).toBe(true)
     expect(await screen.findByText('deepseek / deepseek-chat')).toBeTruthy()
     expect(call).toHaveBeenCalledWith('/dsh-mnemon-read', 'task-agent-models', { includeCatalog: false })
-    fireEvent.click(screen.getByRole('radio', { name: '指定模型 Provider' }))
+    fireEvent.click(screen.getByRole('radio', { name: '指定模型服务' }))
     await waitFor(() => expect(call).toHaveBeenCalledWith('/dsh-mnemon-read', 'task-agent-models', { includeCatalog: true }))
-    fireEvent.change(screen.getByRole('combobox', { name: '模型 Provider' }), { target: { value: 'openai' } })
+    fireEvent.change(screen.getByRole('combobox', { name: '模型服务' }), { target: { value: 'openai' } })
     expect((screen.getByRole('combobox', { name: '模型' }) as HTMLSelectElement).value).toBe('gpt-5')
     fireEvent.click(screen.getByRole('button', { name: '保存' }))
 
@@ -183,7 +183,7 @@ describe('MnemonSettingsCard', () => {
     })
 
     render(<MnemonSettingsCard scope={scope} connection={{ rpc: { call } } as ClientConnectionHandle} />)
-    fireEvent.click(screen.getByText('指定模型 Provider', { exact: true }))
+    fireEvent.click(screen.getByText('指定模型服务', { exact: true }))
     fireEvent.click(screen.getByText('跟随主链路', { exact: true }))
 
     await act(async () => {
@@ -194,9 +194,9 @@ describe('MnemonSettingsCard', () => {
     })
 
     expect((screen.getByRole('radio', { name: '跟随主链路' }) as HTMLInputElement).checked).toBe(true)
-    fireEvent.click(screen.getByText('指定模型 Provider', { exact: true }))
-    await waitFor(() => expect((screen.getByRole('combobox', { name: '模型 Provider' }) as HTMLSelectElement).disabled).toBe(false))
-    expect((screen.getByRole('combobox', { name: '模型 Provider' }) as HTMLSelectElement).value).toBe('deepseek')
+    fireEvent.click(screen.getByText('指定模型服务', { exact: true }))
+    await waitFor(() => expect((screen.getByRole('combobox', { name: '模型服务' }) as HTMLSelectElement).disabled).toBe(false))
+    expect((screen.getByRole('combobox', { name: '模型服务' }) as HTMLSelectElement).value).toBe('deepseek')
     expect(call.mock.calls.filter(([, endpoint]) => endpoint === 'task-agent-models')).toHaveLength(2)
   })
 
@@ -233,9 +233,9 @@ describe('MnemonSettingsCard', () => {
 
     render(<MnemonSettingsCard scope={scope} connection={{ rpc: { call } } as ClientConnectionHandle} />)
 
-    expect((screen.getByRole('radio', { name: '指定模型 Provider' }) as HTMLInputElement).checked).toBe(true)
-    await waitFor(() => expect((screen.getByRole('combobox', { name: '模型 Provider' }) as HTMLSelectElement).disabled).toBe(false))
-    expect((screen.getByRole('combobox', { name: '模型 Provider' }) as HTMLSelectElement).value).toBe('openai')
+    expect((screen.getByRole('radio', { name: '指定模型服务' }) as HTMLInputElement).checked).toBe(true)
+    await waitFor(() => expect((screen.getByRole('combobox', { name: '模型服务' }) as HTMLSelectElement).disabled).toBe(false))
+    expect((screen.getByRole('combobox', { name: '模型服务' }) as HTMLSelectElement).value).toBe('openai')
     expect((screen.getByRole('combobox', { name: '模型' }) as HTMLSelectElement).value).toBe('gpt-5')
     expect(call).toHaveBeenCalledWith('/dsh-mnemon-read', 'task-agent-models', { includeCatalog: true })
   })
@@ -346,7 +346,7 @@ describe('MnemonSettingsCard', () => {
     const view = render(<MnemonSettingsCard scope={scope} />)
 
     fireEvent.click(view.getByRole('radio', { name: '自定义' }))
-    fireEvent.change(view.getByRole('textbox', { name: 'Mnemon 自定义数据目录' }), { target: { value: '  /tmp/mnemon-custom  ' } })
+    fireEvent.change(view.getByRole('textbox', { name: 'song memory 自定义数据目录' }), { target: { value: '  /tmp/mnemon-custom  ' } })
     fireEvent.click(view.getByRole('button', { name: '保存' }))
 
     await waitFor(() => expect(mutate).toHaveBeenCalledWith([
@@ -386,7 +386,7 @@ describe('MnemonSettingsCard', () => {
     } satisfies ClientSettingsScope<Config> & { snapshot: typeof snapshot }
 
     render(<MnemonSettingsCard scope={scope} />)
-    const directory = screen.getByRole('textbox', { name: 'Mnemon 自定义数据目录' }) as HTMLInputElement
+    const directory = screen.getByRole('textbox', { name: 'song memory 自定义数据目录' }) as HTMLInputElement
     expect(directory.value).toBe('/packs/project')
     fireEvent.change(directory, { target: { value: '/packs/research' } })
     fireEvent.click(screen.getByRole('button', { name: '保存' }))
@@ -419,7 +419,7 @@ describe('MnemonSettingsCard', () => {
     render(<MnemonSettingsCard scope={scope} />)
     fireEvent.click(screen.getByRole('radio', { name: '自定义' }))
 
-    expect((screen.getByRole('textbox', { name: 'Mnemon 自定义数据目录' }) as HTMLInputElement).value).toBe('')
+    expect((screen.getByRole('textbox', { name: 'song memory 自定义数据目录' }) as HTMLInputElement).value).toBe('')
     expect(screen.getByRole('alert').textContent).toBe('选择自定义存储时必须填写数据目录。')
     expect((screen.getByRole('button', { name: '保存' }) as HTMLButtonElement).disabled).toBe(true)
   })
@@ -439,7 +439,7 @@ describe('MnemonSettingsCard', () => {
 
     render(<MnemonSettingsCard scope={scope} />)
     fireEvent.click(screen.getByRole('radio', { name: '自定义' }))
-    const directory = screen.getByRole('textbox', { name: 'Mnemon 自定义数据目录' })
+    const directory = screen.getByRole('textbox', { name: 'song memory 自定义数据目录' })
     fireEvent.change(directory, { target: { value: 'relative/mnemon' } })
     expect(screen.getByRole('alert').textContent).toContain('绝对路径')
     fireEvent.change(directory, { target: { value: 'C:\\memory\\mnemon' } })
@@ -596,14 +596,14 @@ describe('MnemonSettingsCard', () => {
 
     render(<MnemonSettingsCard scope={scope} connection={{ rpc: { call } } as ClientConnectionHandle} />)
 
-    expect(screen.getAllByRole('group', { name: /服务配置/ })).toHaveLength(8)
+    expect(screen.getAllByRole('group', { name: /服务设置/ })).toHaveLength(8)
     const toggles = screen.getAllByRole('checkbox', { name: /^启用 / }) as HTMLInputElement[]
     expect(toggles).toHaveLength(8)
     expect(toggles.every(toggle => !toggle.checked && toggle.disabled)).toBe(true)
     expect(screen.getByText('官方原生').parentElement?.textContent).toContain('工作区')
-    expect(screen.getByRole('group', { name: 'Holographic 服务配置' }).textContent).toContain('工作区')
-    expect(screen.getByRole('group', { name: 'OpenViking 服务配置' }).textContent).toContain('全局')
-    expect(screen.getByRole('status').textContent).toBe('正在读取 Provider 配置…')
+    expect(screen.getByRole('group', { name: 'Holographic 服务设置' }).textContent).toContain('工作区')
+    expect(screen.getByRole('group', { name: 'OpenViking 服务设置' }).textContent).toContain('全局')
+    expect(screen.getByRole('status').textContent).toBe('正在读取存储服务设置…')
   })
 
   it('uses the native default/custom location pattern for a scope-aware local provider', async () => {
@@ -637,7 +637,7 @@ describe('MnemonSettingsCard', () => {
 
     render(<MnemonSettingsCard scope={scope} connection={{ rpc: { call } } as ClientConnectionHandle} />)
 
-    const card = await screen.findByRole('group', { name: 'Holographic 服务配置' })
+    const card = await screen.findByRole('group', { name: 'Holographic 服务设置' })
     fireEvent.click(within(card).getByText('Holographic'))
     const location = within(card).getByRole('radiogroup', { name: 'Holographic 全局数据位置' })
     const defaultLocation = within(location).getByRole('radio', { name: '默认（跟随范围）' }) as HTMLInputElement
@@ -661,7 +661,7 @@ describe('MnemonSettingsCard', () => {
       expect((within(card).getByRole('textbox', { name: '事实存储路径' }) as HTMLInputElement).value).toBe('/srv/dsh/holographic.json')
     }
     const path = within(card).getByRole('textbox', { name: '事实存储路径' })
-    const save = within(card).getByRole('button', { name: '保存服务配置' }) as HTMLButtonElement
+    const save = within(card).getByRole('button', { name: '保存服务设置' }) as HTMLButtonElement
     fireEvent.change(path, { target: { value: '/srv/dsh/holographic-v2.json' } })
     expect(save.disabled).toBe(false)
     fireEvent.click(save)
@@ -705,16 +705,16 @@ describe('MnemonSettingsCard', () => {
     render(<MnemonSettingsCard scope={scope} connection={connection} sessionId="session-1" workspaceId="workspace-1" workspaceLabel="dsh-mnemon" />)
 
     await waitFor(() => expect(screen.getByText('OpenViking')).toBeTruthy())
-    expect(screen.getByRole('group', { name: 'OpenViking 服务配置' })).toBeTruthy()
+    expect(screen.getByRole('group', { name: 'OpenViking 服务设置' })).toBeTruthy()
     const disclosure = screen.getByText('OpenViking').closest('button') as HTMLButtonElement
     expect(disclosure.getAttribute('aria-expanded')).toBe('false')
     expect((screen.getByRole('checkbox', { name: '启用 OpenViking' }) as HTMLInputElement).checked).toBe(true)
-    expect(screen.getByText('当前工作区：dsh-mnemon；标记“工作区”的 Provider 配置与记忆体使用此范围。')).toBeTruthy()
+    expect(screen.getByText('当前工作区：dsh-mnemon；标记“工作区”的存储服务设置与记忆仓库使用此范围。')).toBeTruthy()
     fireEvent.click(screen.getByText('OpenViking'))
     expect(disclosure.getAttribute('aria-expanded')).toBe('true')
     expect((screen.getByLabelText('服务地址') as HTMLInputElement).value).toBe('http://127.0.0.1:1933')
     expect(screen.queryByLabelText('记忆范围 URI')).toBeNull()
-    expect(screen.queryByLabelText('记忆体名称')).toBeNull()
+    expect(screen.queryByLabelText('记忆仓库名称')).toBeNull()
     expect(screen.queryByRole('checkbox', { name: '清除已保存的凭据' })).toBeNull()
     const apiKey = screen.getByLabelText('API Key') as HTMLInputElement
     expect(apiKey.value).toBe('service-secret')
@@ -730,7 +730,7 @@ describe('MnemonSettingsCard', () => {
     expect(apiKey.value).toBe('replacement-secret')
     fireEvent.click(screen.getByRole('button', { name: '隐藏凭证' }))
     expect(apiKey.type).toBe('password')
-    fireEvent.click(screen.getByRole('button', { name: '保存服务配置' }))
+    fireEvent.click(screen.getByRole('button', { name: '保存服务设置' }))
 
     await waitFor(() => expect(call).toHaveBeenCalledWith('/dsh-mnemon-write', 'provider-service-update', {
       providerId: 'openviking',
@@ -739,7 +739,7 @@ describe('MnemonSettingsCard', () => {
       sessionId: 'session-1',
       workspaceId: 'workspace-1',
     }))
-    expect(await screen.findByText('服务配置已保存，记忆体目录已同步')).toBeTruthy()
+    expect(await screen.findByText('服务设置已保存，记忆仓库目录已同步')).toBeTruthy()
     expect(disclosure.getAttribute('aria-expanded')).toBe('true')
     expect(call.mock.calls.filter(([, endpoint]) => endpoint === 'provider-services')).toHaveLength(1)
     expect(call.mock.calls.some(([, endpoint]) => endpoint === 'body-create')).toBe(false)
@@ -786,7 +786,7 @@ describe('MnemonSettingsCard', () => {
     render(<MnemonSettingsCard scope={scope} connection={{ rpc: { call } } as ClientConnectionHandle} />)
 
     const providerToggle = await screen.findByRole('checkbox', { name: '启用 Supermemory' }) as HTMLInputElement
-    const providerCard = screen.getByRole('group', { name: 'Supermemory 服务配置' }) as HTMLDivElement
+    const providerCard = screen.getByRole('group', { name: 'Supermemory 服务设置' }) as HTMLDivElement
     const scrollViewport = providerCard.parentElement as HTMLDivElement
     scrollViewport.style.overflowY = 'auto'
     Object.defineProperties(scrollViewport, { clientHeight: { configurable: true, value: 100 }, scrollHeight: { configurable: true, value: 1000 } })
@@ -808,7 +808,7 @@ describe('MnemonSettingsCard', () => {
     await waitFor(() => expect(call).toHaveBeenCalledWith('/dsh-mnemon-write', 'provider-service-update', expect.objectContaining({
       providerId: 'supermemory', enabled: true, settings: { endpoint: 'https://api.supermemory.ai', apiKey: 'service-secret' },
     })))
-    expect(await screen.findByText('服务配置已保存，记忆体目录已同步')).toBeTruthy()
+    expect(await screen.findByText('服务设置已保存，记忆仓库目录已同步')).toBeTruthy()
 
     fireEvent.click(providerToggle)
     await waitFor(() => expect(call).toHaveBeenCalledWith('/dsh-mnemon-write', 'provider-service-update', expect.objectContaining({
@@ -871,7 +871,7 @@ describe('MnemonSettingsCard', () => {
     await waitFor(() => expect(screen.getByText('/active/.mnemon')).toBeTruthy())
 
     const file = new File(['pack'], 'backup.zip', { type: 'application/zip' })
-    fireEvent.change(screen.getByLabelText('选择 Mnemon 备份 ZIP'), { target: { files: [file] } })
+    fireEvent.change(screen.getByLabelText('选择 song memory 备份 ZIP'), { target: { files: [file] } })
     await waitFor(() => expect(screen.getByText('backup.zip')).toBeTruthy())
     expect(screen.getByText(/校验通过 · 3 个组件 · 4 项/)).toBeTruthy()
     expect(screen.queryByRole('checkbox', { name: /Documents/ })).toBeNull()

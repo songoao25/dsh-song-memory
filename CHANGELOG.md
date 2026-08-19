@@ -5,6 +5,25 @@ All notable changes to this project are documented here. This project adheres to
 
 ---
 
+## [2.1.0] — 2026-08-19
+
+Plain-language **settings page** and full **song memory** rebrand. Engine still
+untouched — all changes are user-visible wording only.
+
+### Changed (UI / wording only)
+
+- **Settings page (config.\*) de-jargoned**: 记忆体 → 记忆仓库, Provider → 存储服务 /
+  模型服务, 任务 Agent → 后台助手, 监督写回 → 自动保存, 存储域 → 存储范围, 档案 → 资料,
+  配置 → 设置, etc. (zh + en). The terminology regression test no longer exempts
+  `config.*`.
+- **Product renamed to song memory**: the visible brand `Mnemon` → `song memory`
+  (zh) / `Song Memory` (en) across navigation, overview, documents, graph, status,
+  settings, and tool-facing copy (`guidance.ts`, `tools.ts`). Internal identifiers
+  (`mnemon_*` tool ids, `mnemon.db`, `.mnemonpack`, `mnemon` CLI, `Mnemon Native`)
+  are deliberately unchanged.
+
+---
+
 ## [2.0.0] — 2026-08-19
 
 This release is a **UI-only redesign fork** of [`dsh-mnemon`](https://github.com/omdsh-dev/dsh-mnemon)

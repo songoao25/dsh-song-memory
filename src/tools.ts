@@ -59,8 +59,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
     execute: (_args: unknown, exec: ToolExecution) => isSubagent(exec.agent)
       ? runtimeFor(exec).service.bodyDirectory()
       : runtimeFor(exec).service.bodies(exec.signal),
-    presentCall: () => ({ card: 'generic', title: 'Inspect Mnemon Memory Spaces', kind: 'search' }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon Memory Spaces ready' }),
+    presentCall: () => ({ card: 'generic', title: 'Inspect Song Memory stores', kind: 'search' }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory stores ready' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -88,8 +88,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
         ? runtimeFor(exec).service.search(args, exec.signal)
         : coordinator.recall(requireAgent(exec), args, exec.signal)
     },
-    presentCall: (args: { query: string }) => ({ card: 'generic', title: 'Recall Mnemon memory', kind: 'search', rawInput: args.query }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon recall complete' }),
+    presentCall: (args: { query: string }) => ({ card: 'generic', title: 'Recall from Song Memory', kind: 'search', rawInput: args.query }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory recall complete' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -119,8 +119,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
         results,
       }
     },
-    presentCall: (args: { id: string }) => ({ card: 'generic', title: 'Traverse Mnemon graph', kind: 'search', rawInput: args.id }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon graph traversal complete' }),
+    presentCall: (args: { id: string }) => ({ card: 'generic', title: 'Traverse Song Memory graph', kind: 'search', rawInput: args.id }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory graph traversal complete' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -129,13 +129,13 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
     parameters: { type: 'object', properties: {} },
     output: { schema: JSON_OBJECT_OUTPUT, render: (_args: unknown, value: unknown) => text(value) },
     execute: (_args: unknown, exec: ToolExecution) => runtimeFor(exec).service.status(exec.signal),
-    presentCall: () => ({ card: 'generic', title: 'Check Mnemon status', kind: 'other' }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon status checked' }),
+    presentCall: () => ({ card: 'generic', title: 'Check Song Memory status', kind: 'other' }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory status checked' }),
   } as never))
 
   ctx.tools.register(definition({
     name: 'mnemon_document_search',
-    description: 'Search project-scoped managed Documents before falling back to deep Mnemon recall. Active Documents contain substantial design, research, procedure, and handoff knowledge. Search is deterministic and read only. Cold archives are excluded unless includeArchived is explicitly required by a known archive reference.',
+    description: 'Search project-scoped managed Documents before falling back to deep Song Memory recall. Active Documents contain substantial design, research, procedure, and handoff knowledge. Search is deterministic and read only. Cold archives are excluded unless includeArchived is explicitly required by a known archive reference.',
     parameters: {
       type: 'object',
       properties: {
@@ -174,13 +174,13 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
         }),
       }
     },
-    presentCall: (args: { query: string }) => ({ card: 'generic', title: 'Search Mnemon Documents', kind: 'search', rawInput: args.query }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon Documents ready' }),
+    presentCall: (args: { query: string }) => ({ card: 'generic', title: 'Search Song Memory Documents', kind: 'search', rawInput: args.query }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory Documents ready' }),
   } as never))
 
   ctx.tools.register(definition({
     name: 'mnemon_document_manage',
-    description: 'Create or update one managed project Document through the Mnemon Documents control plane. Use for substantial reusable project knowledge, not user-profile preferences, routine progress, raw transcripts, secrets, or small hot-memory facts. Source paths are references inside the workspace and are never edited. Archive is allowed only from a root request and first writes a durable Mnemon cold-reference through an isolated subagent.',
+    description: 'Create or update one managed project Document through the Song Memory Documents control plane. Use for substantial reusable project knowledge, not user-profile preferences, routine progress, raw transcripts, secrets, or small hot-memory facts. Source paths are references inside the workspace and are never edited. Archive is allowed only from a root request and first writes a durable Song Memory cold-reference through an isolated subagent.',
     parameters: {
       type: 'object',
       properties: {
@@ -207,8 +207,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
         : { action: 'update', id: args.id ?? '', ...(args.title === undefined ? {} : { title: args.title }), ...(args.description === undefined ? {} : { description: args.description }), ...(args.content === undefined ? {} : { content: args.content }), ...(args.sourcePaths === undefined ? {} : { sourcePaths: args.sourcePaths }), sessionIds: [agent.id] }
       return isSubagent(agent) ? runtimeFor(exec).documents.forAgent(agent).mutate(request) : coordinator.document(agent, request, exec.signal)
     },
-    presentCall: (args: { action: string; title?: string }) => ({ card: 'generic', title: `${args.action} Mnemon Document`, kind: 'edit', ...(args.title === undefined ? {} : { rawInput: args.title }) }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon Document processed' }),
+    presentCall: (args: { action: string; title?: string }) => ({ card: 'generic', title: `${args.action} Song Memory Document`, kind: 'edit', ...(args.title === undefined ? {} : { rawInput: args.title }) }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory Document processed' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -264,8 +264,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
         ? runtimeFor(exec).service.remember(request, exec.signal)
         : coordinator.remember(requireAgent(exec), request, exec.signal)
     },
-    presentCall: () => ({ card: 'generic', title: 'Write Mnemon memory', kind: 'edit' }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon memory processed' }),
+    presentCall: () => ({ card: 'generic', title: 'Write to Song Memory', kind: 'edit' }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory write processed' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -289,8 +289,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
         ? runtimeFor(exec).service.link(args.sourceId, args.targetId, args.type, args.weight, args.reason, exec.signal, args.memoryBodyId)
         : coordinator.write(requireAgent(exec), 'link', args, exec.signal)
     },
-    presentCall: () => ({ card: 'generic', title: 'Link Mnemon insights', kind: 'edit' }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon insights linked' }),
+    presentCall: () => ({ card: 'generic', title: 'Link Song Memory insights', kind: 'edit' }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory insights linked' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -305,8 +305,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
     execute: (args: { id: string; memoryBodyId?: string }, exec: ToolExecution) => isSubagent(exec.agent)
       ? runtimeFor(exec).service.forget(args.id, exec.signal, args.memoryBodyId)
       : coordinator.write(requireAgent(exec), 'forget', args, exec.signal),
-    presentCall: (args: { id: string }) => ({ card: 'generic', title: 'Forget Mnemon insight', kind: 'edit', rawInput: args.id }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon insight forgotten' }),
+    presentCall: (args: { id: string }) => ({ card: 'generic', title: 'Forget Song Memory insight', kind: 'edit', rawInput: args.id }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory insight forgotten' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -352,8 +352,8 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
     execute: (args: { memoryBodyId: string; name?: string; description?: string; active?: boolean }, exec: ToolExecution) => isSubagent(exec.agent)
       ? runtimeFor(exec).service.updateBody(args.memoryBodyId, args)
       : coordinator.write(requireAgent(exec), 'update-memory-body', args, exec.signal),
-    presentCall: () => ({ card: 'generic', title: 'Update Mnemon Memory Space', kind: 'edit' }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon Memory Space updated' }),
+    presentCall: () => ({ card: 'generic', title: 'Update Song Memory store', kind: 'edit' }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory store updated' }),
   } as never))
 
   ctx.tools.register(definition({
@@ -372,7 +372,7 @@ export function registerTools(ctx: HostContextShape, serviceOrSource: MnemonServ
     execute: (args: { targetMemoryBodyId: string; sourceMemoryBodyIds: string[]; deactivateSources?: boolean }, exec: ToolExecution) => isSubagent(exec.agent)
       ? runtimeFor(exec).service.mergeBodies(args.targetMemoryBodyId, args.sourceMemoryBodyIds, args.deactivateSources ?? true, exec.signal)
       : coordinator.write(requireAgent(exec), 'merge-memory-bodies', args, exec.signal),
-    presentCall: () => ({ card: 'generic', title: 'Merge Mnemon Memory Spaces', kind: 'edit' }),
-    presentResult: () => ({ card: 'generic', title: 'Mnemon Memory Spaces merged' }),
+    presentCall: () => ({ card: 'generic', title: 'Merge Song Memory stores', kind: 'edit' }),
+    presentResult: () => ({ card: 'generic', title: 'Song Memory stores merged' }),
   } as never))
 }

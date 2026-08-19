@@ -4,7 +4,7 @@ import type { RuntimeMemoryController } from './runtime-memory.ts'
 
 export const GUIDANCE_SECTION_NAME = 'mnemon:routing'
 export const RUNTIME_MEMORY_CONTEXT_NAME = 'mnemon:runtime-memory'
-export const ROUTING_GUIDANCE = 'Use memory only by need. For substantial project records, search active Mnemon Documents before deep recall. Call mnemon_recall when durable history may matter or an exact prior detail is missing; never infer a missing historical rule. New explicit reusable facts normally go to mnemon_runtime_memory. A write completes only with a tool receipt.'
+export const ROUTING_GUIDANCE = 'Use memory only by need. For substantial project records, search active Song Memory Documents before deep recall. Call mnemon_recall when durable history may matter or an exact prior detail is missing; never infer a missing historical rule. New explicit reusable facts normally go to mnemon_runtime_memory. A write completes only with a tool receipt.'
 const RUNTIME_MEMORY_LITERAL_OPEN_BRACES_VARIABLE = 'mnemon_runtime_memory_literal_open_braces'
 const LITERAL_OPEN_BRACES = '{{'
 

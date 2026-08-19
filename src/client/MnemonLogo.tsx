@@ -4,7 +4,7 @@ export interface MnemonLogoProps {
 }
 
 /** Official Mnemon mark from mnemon-dev/mnemon (Apache-2.0). */
-export function MnemonLogo({ className, title = 'Mnemon' }: MnemonLogoProps): JSX.Element {
+export function MnemonLogo({ className, title = 'song memory' }: MnemonLogoProps): JSX.Element {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label={title}>
       <rect width="400" height="400" fill="#1A1A1A" />

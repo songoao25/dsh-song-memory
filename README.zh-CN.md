@@ -1,17 +1,18 @@
-<h1 align="center">dsh-mnemon</h1>
+<h1 align="center">dsh-song-memory</h1>
 
 <p align="center"><a href="./README.md">English</a> · <strong>简体中文</strong></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/release-v0.2.9-5b5bd6" alt="发布版本 v0.2.9">
+  <img src="https://img.shields.io/badge/release-v2.0.0-5b5bd6" alt="发布版本 v2.0.0">
   <img src="https://img.shields.io/badge/%E8%AE%B0%E5%BF%86-3%20%E5%B1%82-087c5b" alt="三层记忆">
   <img src="https://img.shields.io/badge/Provider-9-c66a09" alt="九种 Provider">
   <img src="https://img.shields.io/badge/Node.js-%E2%89%A520-43853d" alt="Node.js 20 或更新版本">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-172033" alt="MIT 许可证"></a>
 </p>
 
-<p align="center"><strong>DeepSeek Harness 的三层、可插拔、Agent 驱动记忆系统。</strong></p>
-<p align="center">三层记忆 · 九种长期记忆 Provider · 一套受监督工作流</p>
+<p align="center"><strong>DeepSeek Harness 的「三层、可插拔、Agent 驱动」记忆系统 —— 界面已重做成大白话。</strong></p>
+<p align="center">基于 <a href="https://github.com/omdsh-dev/dsh-mnemon">dsh-mnemon</a> v0.2.9 的界面重做分支，引擎完整保留。</p>
+<p align="center">本分支仓库：<a href="https://github.com/songoao25/dsh-song-memory">github.com/songoao25/dsh-song-memory</a> · 引擎文档与截图仍归属上游项目。</p>
 
 <p align="center">
   <a href="https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/media/dsh-mnemon-memory-system-demo.mp4">
@@ -19,14 +20,35 @@
   </a>
 </p>
 
+> **说明**：上方截图 / 视频与本文其余处的界面素材（`.gif`、`.png`、`.mp4` 等）来自上游项目 `omdsh-dev/dsh-mnemon`，可公开渲染；它们展示的是同一套共享引擎与界面能力。dsh-song-memory 仅重做了 `src/client/` 界面文案与导航，引擎层与上游逐字节一致。
+
 <p align="center">
   <a href="./docs/zh-CN/capabilities.md"><strong>先看能力地图</strong></a> ·
   <a href="./docs/zh-CN/getting-started.md">5 分钟开始</a> ·
-  <a href="./docs/zh-CN/releases/v0.2.9.md">v0.2.9 升级说明</a> ·
+  <a href="./docs/zh-CN/releases/v0.2.9.md">引擎升级说明</a> ·
   <a href="https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/media/dsh-mnemon-memory-system-demo.mp4">观看宽屏实机演示</a>
 </p>
 
-`dsh-mnemon` 为 DSH 提供统一的记忆控制面，但不要求所有知识进入同一种数据库。运行时记忆让紧凑上下文每轮可用；项目档案保留完整叙事；记忆体按需召回长期证据，底层可选择 **Mnemon、OpenViking、Honcho、Mem0、Hindsight、Holographic、RetainDB、ByteRover 或 Supermemory**。
+## 这是什么（给不愿读术语的人）
+
+`dsh-song-memory` 是 DeepSeek Harness（DSH）的一个插件，帮 AI **记住你说过的话、你的偏好、项目的决定**，并在之后的对话里自动用上——而不用你手动维护任何数据库、也不用懂任何术语。
+
+它是 [`dsh-mnemon`](https://github.com/omdsh-dev/dsh-mnemon) v0.2.9 的一个**界面重做分支（fork）**：底层引擎、9 种存储服务、所有命令与能力**一个字没动**，我们只是把那套满是「记忆体 / 沉淀 / 召回 / Provider / 存储域」黑话的界面，按苹果 HIG 理念重做成了大白话。功能零丢失。
+
+**重做后，主界面只有四个大白话标签：**
+
+| 标签 | 干啥用 | 对应旧名 |
+|---|---|---|
+| **记忆** | 存东西、找东西、看关系图、设策略 | 记忆体 / 检索 / 图谱 |
+| **常用小抄** | 关于「我」的偏好、关于「项目」的规则，每轮自动注入 | 运行时 |
+| **项目文档** | 设计、调查、复盘等完整笔记 | 档案 |
+| **运行状态** | 一眼看引擎 / 存储 / 连接是否健康 + 版本检查 | 状态 |
+
+最常用的动作是 **「存入记忆」**：在对话里点一下，或直接说"帮我记住……"，AI 自己判断值不值得存、存到哪个仓库、会不会重复——你不用选任何技术选项。检索默认就是「智能模式」（用大白话提问就能找回来）。
+
+> 旧名 → 新白话名的完整对照见下方的「v2.0.0 重做说明」。
+
+`dsh-song-memory` 为 DSH 提供统一的记忆控制面，但不要求所有知识进入同一种数据库。运行时记忆让紧凑上下文每轮可用；项目文档保留完整叙事；记忆按需召回长期证据，底层可选择 **Mnemon、OpenViking、Honcho、Mem0、Hindsight、Holographic、RetainDB、ByteRover 或 Supermemory**。
 
 Mnemon 仍是官方优先的原生引擎。可以替换的是第三层；无论选择哪个 Provider，前两层的存储、工作区和交互心智保持不变。
 
@@ -34,11 +56,11 @@ Mnemon 仍是官方优先的原生引擎。可以替换的是第三层；无论�
 
 | 层级 | 适合保存 | 如何进入 Agent 上下文 | 由谁管理 |
 |---|---|---|---|
-| **运行时** | 偏好、协作规则、项目约定、环境事实 | `USER.md` / `MEMORY.md` 每轮紧凑投影 | dsh-mnemon Host 确定性管理 |
-| **档案** | 设计、调查、流程、复盘、交接材料 | 先检索，再按需阅读全文 | dsh-mnemon Host 确定性管理 |
-| **记忆体** | 跨会话事实、决策、实体与关系 | 从已激活记忆体召回有界证据 | Mnemon Native 或三方 Provider |
+| **运行时（常用小抄）** | 偏好、协作规则、项目约定、环境事实 | `USER.md` / `MEMORY.md` 每轮紧凑投影 | dsh-song-memory Host 确定性管理 |
+| **档案（项目文档）** | 设计、调查、流程、复盘、交接材料 | 先检索，再按需阅读全文 | dsh-song-memory Host 确定性管理 |
+| **记忆体（记忆）** | 跨会话事实、决策、实体与关系 | 从已激活记忆体召回有界证据 | Mnemon Native 或三方 Provider |
 
-三层不是同一内容的副本。简单判断规则是：**每轮都需要的放运行时，需要完整阅读的放档案，需要跨任务按需召回的放记忆体。**当前指令、仓库文件与实时工具结果始终高于历史记忆。
+三层不是同一内容的副本。简单判断规则是：**每轮都需要的放运行时（常用小抄），需要完整阅读的放档案（项目文档），需要跨任务按需召回的放记忆体（记忆）。**当前指令、仓库文件与实时工具结果始终高于历史记忆。
 
 ## 点击之后，谁在工作
 
@@ -46,7 +68,7 @@ Mnemon 仍是官方优先的原生引擎。可以替换的是第三层；无论�
 |---|---|---|
 | **检索** | 并发调用各 Provider 最快的原生召回路径 | 只读 |
 | **Agent 查询** | 新建独立顶层任务 Agent，只接收有界证据并组织答案 | 只读 |
-| **沉淀记忆** / **存入记忆** | 独立任务 Agent 判断、选路、查重、提炼；Host 控制写入 | 只有通过判断才写入 |
+| **存入记忆** | 独立任务 Agent 判断、选路、查重、提炼；Host 控制写入 | 只有通过判断才写入 |
 | **智能选择** | 硬规则先筛选，只有真实歧义才交给任务 Agent | 保存路由回执 |
 | **AI 维护元信息** | 每个选中记忆体各自启动异步任务，并使用最快采样路径 | 只更新本地标题与说明 |
 | **归档档案** | 任务 Agent 先建立可检索冷引用，Host 验证后移动原文 | 受监督迁移 |
@@ -54,7 +76,7 @@ Mnemon 仍是官方优先的原生引擎。可以替换的是第三层；无论�
 
 这些任务不会复用或挤占主对话历史。默认跟随 DSH 新建会话时的模型路由；也可以在**设置 → 记忆系统 → 后台任务 Agent**单独指定 Provider 与模型。
 
-## 一套记忆体工作流，九种 Provider
+## 一套记忆工作流，九种 Provider
 
 | Provider | 形态 | 适合场景 |
 |---|---|---|
@@ -68,7 +90,7 @@ Mnemon 仍是官方优先的原生引擎。可以替换的是第三层；无论�
 | **ByteRover** | 本地 `brv` CLI | 代码知识树与 curate 流程 |
 | **Supermemory** | HTTP container | 文档摄取与容器级共享 |
 
-Provider 能力差异会如实展示：引擎没有图谱边、删除语义或可枚举内容时，dsh-mnemon 不会伪造。**设置页管理可复用的 Provider 服务；记忆体页管理具体实例、激活、作用域与元信息。**三方 Provider 默认关闭。
+Provider 能力差异会如实展示：引擎没有图谱边、删除语义或可枚举内容时，dsh-song-memory 不会伪造。**设置页管理可复用的 Provider 服务；记忆页管理具体实例、激活、作用域与元信息。**三方 Provider 默认关闭。
 
 完整差异见 [Provider 能力与部署矩阵](./docs/zh-CN/memory-providers.md)。
 
@@ -77,6 +99,8 @@ Provider 能力差异会如实展示：引擎没有图谱边、删除语义或�
 下面约 55 秒的素材来自真实的 1600×900 DSH WebUI：在完整上下滑动、页面切换、Provider 卡片、弹窗、按钮状态变化和 Agent 答案上都保留了更清晰的停留，并包含一次真正完成的只读 Agent 查询。可能改变数据的确认按钮都没有提交。
 
 ![dsh-mnemon v0.2.0 完整 WebUI：上下滚动与按钮交互](https://raw.githubusercontent.com/omdsh-dev/dsh-mnemon/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/media/dsh-mnemon-memory-system-demo.gif)
+
+> 上方界面素材来自上游 `dsh-mnemon`；你在 dsh-song-memory 里看到的导航标签与文案就是这些大白话等价物（记忆 / 常用小抄 / 项目文档 / 运行状态）。
 
 [观看 1600×900 MP4](https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/media/dsh-mnemon-memory-system-demo.mp4) · [按页面查看交互指南](./docs/zh-CN/ui-guide.md)
 
@@ -101,33 +125,33 @@ Windows 推荐安装 v0.2.3 或更高版本的官方 ZIP；标准安装目录与
 ### 2. 安装 DSH 插件
 
 ```sh
-dsh plugin --profile web add dsh-mnemon
+dsh plugin --profile web add dsh-song-memory
 dsh --profile web
 ```
 
 DSH 各 profile 的插件清单彼此独立。一次性 Headless 任务需要单独安装：
 
 ```sh
-dsh plugin --profile headless add dsh-mnemon
+dsh plugin --profile headless add dsh-song-memory
 dsh --profile headless "回答前先检查持久化的项目上下文。"
 ```
 
 本地开发检出使用绝对路径：
 
 ```sh
-dsh plugin --profile web add "link:/absolute/path/to/dsh-mnemon"
-dsh plugin --profile headless add "link:/absolute/path/to/dsh-mnemon"
+dsh plugin --profile web add "link:/absolute/path/to/dsh-song-memory"
+dsh plugin --profile headless add "link:/absolute/path/to/dsh-song-memory"
 ```
 
 ### 3. 完成第一次验证
 
-1. 打开**记忆系统 → 状态**，确认 dsh-mnemon、Mnemon Native、运行时、档案和已启用 Provider 正常；
-2. 打开**记忆体 → 概览 → 创建记忆体**，人工选择一个已启用 Provider；
-3. 通过**沉淀记忆**提交一条稳定、未来仍有用的候选；
+1. 打开**运行状态（Status）**，确认 dsh-song-memory、Mnemon Native、运行时、档案和已启用 Provider 正常；
+2. 打开**记忆 → 概览 → 新建记忆仓库**，人工选择一个已启用 Provider（或让默认的"智能 + 本地优先"帮你处理）；
+3. 通过**存入记忆**提交一条稳定、未来仍有用的候选；
 4. 在**检索**先执行直接检索，再对同一个问题执行**Agent 查询**；
 5. 回到对话，展开**本回合记忆**并点击一个具体工具条目。
 
-一级页顺序刻意保持稳定：**状态、运行时、档案、记忆体**。
+一级页顺序刻意保持为大白话：**记忆 / 常用小抄 / 项目文档 / 运行状态**。
 
 ## 沿用熟悉心智，扩展底层能力
 
@@ -137,7 +161,7 @@ dsh plugin --profile headless add "link:/absolute/path/to/dsh-mnemon"
 |---|---|
 | [![编辑候选内容后再调度独立任务 Agent](https://raw.githubusercontent.com/omdsh-dev/dsh-mnemon/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/remember-dialog.png)](https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/remember-dialog.png) | [![基于多 Provider 有界证据完成只读 Agent 查询](https://raw.githubusercontent.com/omdsh-dev/dsh-mnemon/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/recall-agent-answer.png)](https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/recall-agent-answer.png) |
 
-工作台会在调度前明确展示任务边界，并把返回答案与本次证据范围放在一起。对话内的“本回合记忆”和“存入记忆”仍默认开启，可在**设置 → 记忆系统 → 对话界面**分别关闭。
+工作台会在调度前明确展示任务边界，并把返回答案与本次证据范围放在一起。对话内的"本回合记忆"和"存入记忆"仍默认开启，可在**设置 → 记忆系统 → 对话界面**分别关闭。
 
 ### 人工创建与策略选路
 
@@ -145,7 +169,7 @@ dsh plugin --profile headless add "link:/absolute/path/to/dsh-mnemon"
 |---|---|
 | [![创建记忆体时明确选择 Provider](https://raw.githubusercontent.com/omdsh-dev/dsh-mnemon/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/memory-space-create-dialog.png)](https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/memory-space-create-dialog.png) | [![在人工指定与智能选择之间配置沉淀策略](https://raw.githubusercontent.com/omdsh-dev/dsh-mnemon/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/distillation-strategy.png)](https://github.com/omdsh-dev/dsh-mnemon/blob/e6ca446e45bdd17991f3c7c98560456de465282b/docs/assets/screenshots/distillation-strategy.png) |
 
-手动创建记忆体始终由用户明确选择。智能选择属于“沉淀策略”：硬规则定义候选范围，策略 Prompt 只在多个候选都合格时帮助任务 Agent 决策。
+手动创建记忆体始终由用户明确选择。智能选择属于"沉淀策略"：硬规则定义候选范围，策略 Prompt 只在多个候选都合格时帮助任务 Agent 决策。
 
 ## 全局、工作区与自定义
 
@@ -161,9 +185,9 @@ dsh plugin --profile headless add "link:/absolute/path/to/dsh-mnemon"
 
 | 表面 | 可用能力 |
 |---|---|
-| **Sidebar WebUI** | 状态、运行时、档案、记忆体、Provider 服务、可视化与确认入口 |
+| **Sidebar WebUI** | 运行状态、常用小抄、项目文档、记忆、Provider 服务、可视化与确认入口 |
 | **对话内 UI** | 本回合记忆、存入记忆、精确跳转对应页面 |
-| **Headless** | 没有 WebUI，但保留运行时注入、档案检索、记忆体工具、工作区路由与受监督写入 |
+| **Headless** | 没有 WebUI，但保留运行时注入、档案检索、记忆工具、工作区路由与受监督写入 |
 | **命令** | `/mnemon status`、`recall`、`related`、`remember`、`forget` |
 
 ## 数据与安全边界
@@ -178,6 +202,24 @@ dsh plugin --profile headless add "link:/absolute/path/to/dsh-mnemon"
 
 备份、恢复与故障诊断见[运维、安全与故障处理](./docs/zh-CN/operations.md)。
 
+## v2.0.0 重做说明 / Redesign notes
+
+`dsh-song-memory` v2.0.0 是 `dsh-mnemon` v0.2.9 的**纯界面重做分支**。分支规则严格：**只改了 `src/client/`，整个引擎 / 逻辑层与上游逐字节一致**（9 个记忆 Provider、宿主注入、命令、对话内 UI、Headless/CLI 全部原样保留）。没有任何能力被新增或删减。
+
+界面重做改了什么（理念：苹果 HIG——默认简单、高级折叠隐藏、术语全白话、功能零丢失）：
+
+- **四个大白话一级标签**取代旧的技术标签：
+  - 记忆（Memory）← 记忆体 / 检索 / 图谱 / 内容 / 实体 / 沉淀策略
+  - 常用小抄（Runtime / 个人小抄）← 运行时
+  - 项目文档（Documents）← 档案
+  - 运行状态（Status / 运行与诊断）← 状态
+- **记忆页内**：概览 / 检索 / 内容 / 实体 + 存入记忆（原「写入」）+ 策略。智能 / 引导式召回**默认开启**。
+- **「存入记忆」统一流程**：一个按钮（或"帮我记住……"）让 AI 自行判断值不值得存、存哪、是否重复——日常存入无需任何技术选择。
+- **黑话清理**：记忆体 / 沉淀 / 召回 / Provider / 存储域 等术语在主界面被替换为大白话（设置 / 高级区按设计保留上游用词）。
+- **14 个上游功能模块全部从四个标签可达**——功能与上游完全一致，只重排了界面文案。
+
+`./docs/zh-CN/` 下的引擎文档继承自上游 `dsh-mnemon`，描述的是共享且未改动的引擎；其中 UI 用词可能与本分支的大白话标签不同。
+
 ## 文档地图
 
 | 我想要…… | 从这里开始 |
@@ -190,7 +232,9 @@ dsh plugin --profile headless add "link:/absolute/path/to/dsh-mnemon"
 | 配置范围、路由与模型 | [配置参考](./docs/zh-CN/configuration.md) |
 | 备份、更新或排障 | [运维指南](./docs/zh-CN/operations.md) |
 | 接入工具、命令或 RPC | [接口参考](./docs/zh-CN/interfaces.md) |
-| 查看本次升级 | [v0.2.9 发布说明](./docs/zh-CN/releases/v0.2.9.md) |
+| 查看本次引擎升级 | [v0.2.9 发布说明](./docs/zh-CN/releases/v0.2.9.md) |
+
+这些文档描述的是继承自上游 `dsh-mnemon` 的共享引擎；本分支的 UI 标签即上文列出的大白话等价物。
 
 完整目录见[文档中心](./docs/zh-CN/README.md)。
 
@@ -206,3 +250,7 @@ pnpm run verify
 ## 许可证
 
 MIT。安全问题请通过 [SECURITY.md](./SECURITY.md) 私下报告，不要公开提交 issue。
+
+---
+
+`dsh-song-memory` 是 [`dsh-mnemon`](https://github.com/omdsh-dev/dsh-mnemon)（上游 MIT / Apache-2.0）的界面重做分支。引擎版权归上游所有；本分支的界面重排文案以相同 MIT 许可证发布。

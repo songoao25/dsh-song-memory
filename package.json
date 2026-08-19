@@ -1,6 +1,6 @@
 {
   "name": "dsh-song-memory",
-  "version": "0.2.9",
+  "version": "2.0.0",
   "description": "Three-tier memory control plane for DeepSeek Harness: persistent runtime context, searchable project documents, pluggable long-term memory, smart routing, supervised agent workflows, WebUI, and headless tools.",
   "keywords": [
     "deepseek-harness",

@@ -119,7 +119,7 @@ export function apply(rawContext: unknown): void {
     // mode is buildin while the settings snapshot is still in flight.
     const mode = snapshot.status === 'loading'
       ? undefined
-      : value?.tabEnabled === false ? undefined : value?.displayMode ?? 'sidebar'
+      : value?.tabEnabled === false ? undefined : value?.displayMode ?? 'buildin'
     if (activeMemoryWorkspace?.mode === mode) return
     activeMemoryWorkspace?.dispose()
     activeMemoryWorkspace = mode === undefined

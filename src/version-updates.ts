@@ -39,12 +39,16 @@ export interface VersionUpdateDependencies {
   fetchMnemonLatest?: () => Promise<string | undefined>
 }
 
-const DSH_MNEMON_PACKAGE = 'dsh-mnemon'
 const MNEMON_MODULE = 'github.com/mnemon-dev/mnemon'
 const PACKAGE_MANIFEST_PATH = fileURLToPath(new URL('../package.json', import.meta.url))
 const CHECK_TIMEOUT_MS = 10_000
 const UPDATE_TIMEOUT_MS = 10 * 60_000
 const MAX_UPDATE_OUTPUT_BYTES = 16 * 1024
+
+/** Resolve the installed npm package name from its own manifest (not a hardcoded brand). */
+function packageNameOf(manifestPath: string): string {
+  return manifest(manifestPath)?.name ?? 'dsh-song-memory'
+}
 
 async function settledWithin<T>(promise: Promise<T>, fallback: T, timeoutMs = CHECK_TIMEOUT_MS + 1_000): Promise<T> {
   let timer: NodeJS.Timeout | undefined
@@ -149,7 +153,7 @@ async function fetchJson(url: string): Promise<unknown> {
   try {
     const response = await fetch(url, {
       signal: controller.signal,
-      headers: { accept: 'application/json', 'user-agent': 'dsh-mnemon-version-check' },
+      headers: { accept: 'application/json', 'user-agent': 'dsh-song-memory-version-check' },
     })
     if (!response.ok) return undefined
     return await response.json()
@@ -174,8 +178,8 @@ async function fetchMnemonLatest(): Promise<string | undefined> {
   return typeof tag === 'string' ? tag.replace(/^v/, '') : undefined
 }
 
-function dependencySpec(profile: PackageManifest | undefined): string | undefined {
-  return profile?.dependencies?.[DSH_MNEMON_PACKAGE] ?? profile?.devDependencies?.[DSH_MNEMON_PACKAGE]
+function dependencySpec(profile: PackageManifest | undefined, packageName: string): string | undefined {
+  return profile?.dependencies?.[packageName] ?? profile?.devDependencies?.[packageName]
 }
 
 function isLinkSpec(spec: string | undefined): boolean {
@@ -189,11 +193,12 @@ function linkedTarget(profileDir: string, spec: string): string | undefined {
 }
 
 function profileFromAncestor(packageManifestPath: string): DshInstall | undefined {
+  const packageName = packageNameOf(packageManifestPath)
   let directory = dirname(packageManifestPath)
   for (let depth = 0; depth < 12; depth++) {
     const profile = manifest(join(directory, 'package.json'))
     if (profile?.name?.startsWith('dsh-profile-') === true) {
-      const spec = dependencySpec(profile)
+      const spec = dependencySpec(profile, packageName)
       const linked = isLinkSpec(spec)
       return {
         mode: linked ? 'link' : 'npm',
@@ -210,6 +215,7 @@ function profileFromAncestor(packageManifestPath: string): DshInstall | undefine
 }
 
 function linkedProfile(packageManifestPath: string, dshHome: string): DshInstall | undefined {
+  const packageName = packageNameOf(packageManifestPath)
   const profilesDir = join(dshHome, 'profiles')
   if (!existsSync(profilesDir)) return undefined
   const packageRoot = realpathSync(dirname(packageManifestPath))
@@ -217,7 +223,7 @@ function linkedProfile(packageManifestPath: string, dshHome: string): DshInstall
   for (const entry of readdirSync(profilesDir, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue
     const profileDir = join(profilesDir, entry.name)
-    const spec = dependencySpec(manifest(join(profileDir, 'package.json')))
+    const spec = dependencySpec(manifest(join(profileDir, 'package.json')), packageName)
     if (!isLinkSpec(spec)) continue
     const target = spec === undefined ? undefined : linkedTarget(profileDir, spec)
     if (target === undefined || !existsSync(target)) continue
@@ -310,10 +316,11 @@ export class VersionUpdateManager {
   }
 
   async check(): Promise<VersionStatus> {
+    const packageName = packageNameOf(this.packageManifestPath)
     const [mnemonLocal, mnemonLatest, dshLatest] = await Promise.all([
       settledWithin(this.inspectMnemon(), { install: { mode: 'missing' } }),
       settledWithin(this.fetchMnemonLatest(), undefined),
-      settledWithin(this.fetchNpmLatest(DSH_MNEMON_PACKAGE), undefined),
+      settledWithin(this.fetchNpmLatest(packageName), undefined),
     ])
     const dshInstall = inspectDshInstall(this.packageManifestPath, this.dshHome)
     const pnpm = this.executable('pnpm')
@@ -341,8 +348,8 @@ export class VersionUpdateManager {
           ...(mnemonLatest === undefined ? { checkError: 'latest-unavailable' } : {}),
         },
         {
-          id: 'dsh-mnemon',
-          name: 'dsh-mnemon',
+          id: packageName as VersionComponentId,
+          name: packageName,
           ...(dshInstall.profileName === undefined ? {} : { installProfile: dshInstall.profileName }),
           installPath: dshInstall.locationDir,
           current: this.currentDshMnemonVersion,
@@ -380,14 +387,14 @@ export class VersionUpdateManager {
       }
     }
 
-    if (component !== 'dsh-mnemon') throw new Error(`Unknown version component: ${String(component)}`)
-    const latest = await this.fetchNpmLatest(DSH_MNEMON_PACKAGE)
-    if (latest === undefined) throw new Error('Unable to verify the latest dsh-mnemon release')
+    if (component !== packageNameOf(this.packageManifestPath)) throw new Error(`Unknown version component: ${String(component)}`)
+    const latest = await this.fetchNpmLatest(packageNameOf(this.packageManifestPath))
+    if (latest === undefined) throw new Error('Unable to verify the latest dsh-song-memory release')
     if (compareVersions(this.currentDshMnemonVersion, latest) >= 0) return { component, previousVersion: this.currentDshMnemonVersion, currentVersion: this.currentDshMnemonVersion, updated: false, restartRequired: false }
     const install = inspectDshInstall(this.packageManifestPath, this.dshHome)
     const pnpm = this.executable('pnpm')
-    if (install.mode !== 'npm' || install.profileDir === undefined || pnpm === undefined) throw new Error('This dsh-mnemon installation cannot be updated automatically')
-    const output = await resultOrThrow(this.processRunner, pnpm, ['update', DSH_MNEMON_PACKAGE], UPDATE_TIMEOUT_MS)
+    if (install.mode !== 'npm' || install.profileDir === undefined || pnpm === undefined) throw new Error('This dsh-song-memory installation cannot be updated automatically')
+    const output = await resultOrThrow(this.processRunner, pnpm, ['update', packageNameOf(this.packageManifestPath)], UPDATE_TIMEOUT_MS)
     const outputText = updateOutput(output)
     this.dshMnemonVersion = latest
     return {

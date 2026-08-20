@@ -53,7 +53,7 @@ function llmService(value: unknown): HostLlmService | undefined {
 export type { TurnMemoryActivity, TurnMemoryActivitySnapshot } from './activity.ts'
 export type { AssistantMessageText, LifecycleAgentSnapshot, LifecycleCounters, LifecyclePhase, LifecycleSnapshot } from './shared/contracts.ts'
 
-export const MNEMON_PLUGIN_SOURCE = 'dsh-mnemon'
+export const MNEMON_PLUGIN_SOURCE = 'dsh-song-memory'
 
 export interface SupervisedWritebackResult extends DelegatedWriteResult { sessionId: string }
 
@@ -139,9 +139,9 @@ function assistantMessageText(events: readonly HostSessionEvent[], messageId: st
 }
 
 function guidedReminder(config: ResolvedConfig): string | undefined {
-  if (config.recallMode === 'guided' && config.writebackMode === 'guided') return '[MNEMON] Search active Documents for substantial project knowledge before deep recall; call mnemon_recall only when durable history or an exact prior detail matters, and use mnemon_runtime_memory only for new explicit reusable facts. Otherwise call none.'
-  if (config.recallMode === 'guided') return '[MNEMON] Search active Documents for substantial project knowledge before deep recall; call mnemon_recall only when durable history or an exact prior detail matters. Otherwise call neither.'
-  if (config.writebackMode === 'guided') return '[MNEMON] Use mnemon_runtime_memory only for new, explicit, reusable information; otherwise continue without writing memory.'
+  if (config.recallMode === 'guided' && config.writebackMode === 'guided') return '[dsh-song-memory] Search active Documents for substantial project knowledge before deep recall; call mnemon_recall only when durable history or an exact prior detail matters, and use mnemon_runtime_memory only for new explicit reusable facts. Otherwise call none.'
+  if (config.recallMode === 'guided') return '[dsh-song-memory] Search active Documents for substantial project knowledge before deep recall; call mnemon_recall only when durable history or an exact prior detail matters. Otherwise call neither.'
+  if (config.writebackMode === 'guided') return '[dsh-song-memory] Use mnemon_runtime_memory only for new, explicit, reusable information; otherwise continue without writing memory.'
   return undefined
 }
 

@@ -33,8 +33,8 @@ describe('VersionUpdateManager', () => {
     const dshHome = directory('link-home')
     const profile = join(dshHome, 'profiles', 'web')
     mkdirSync(profile, { recursive: true })
-    json(join(root, 'package.json'), { name: 'dsh-mnemon', version: '0.1.2' })
-    json(join(profile, 'package.json'), { name: 'dsh-profile-web', dependencies: { 'dsh-mnemon': `link:${root}` } })
+    json(join(root, 'package.json'), { name: 'dsh-song-memory', version: '0.1.2' })
+    json(join(profile, 'package.json'), { name: 'dsh-profile-web', dependencies: { 'dsh-song-memory': `link:${root}` } })
     const manager = new VersionUpdateManager({
       packageManifestPath: join(root, 'package.json'),
       dshHome,
@@ -45,7 +45,7 @@ describe('VersionUpdateManager', () => {
     })
 
     const status = await manager.check()
-    expect(status.components.find(component => component.id === 'dsh-mnemon')).toMatchObject({
+    expect(status.components.find(component => component.id === 'dsh-song-memory')).toMatchObject({
       current: '0.1.2', latest: '0.1.3', outdated: true, installMode: 'link', installProfile: 'web', installPath: root, updateSupported: false, updateHint: 'link',
     })
   })
@@ -70,7 +70,7 @@ describe('VersionUpdateManager', () => {
       current: '0.2.3',
       latest: '0.2.3',
     })
-    expect(status.components.find(component => component.id === 'dsh-mnemon')).toMatchObject({
+    expect(status.components.find(component => component.id === 'dsh-song-memory')).toMatchObject({
       installMode: 'manual',
       installPath: root,
     })
@@ -78,10 +78,10 @@ describe('VersionUpdateManager', () => {
 
   it('updates an npm-managed plugin only inside its owning DSH profile', async () => {
     const profile = directory('npm-profile')
-    const packageRoot = join(profile, 'node_modules', 'dsh-mnemon')
+    const packageRoot = join(profile, 'node_modules', 'dsh-song-memory')
     mkdirSync(packageRoot, { recursive: true })
-    json(join(profile, 'package.json'), { name: 'dsh-profile-web', dependencies: { 'dsh-mnemon': '^0.1.2' } })
-    json(join(packageRoot, 'package.json'), { name: 'dsh-mnemon', version: '0.1.2' })
+    json(join(profile, 'package.json'), { name: 'dsh-profile-web', dependencies: { 'dsh-song-memory': '^0.1.2' } })
+    json(join(packageRoot, 'package.json'), { name: 'dsh-song-memory', version: '0.1.2' })
     const run = vi.fn<ProcessRunner>(async () => ({ stdout: 'updated', stderr: '', exitCode: 0 }))
     const manager = new VersionUpdateManager({
       packageManifestPath: join(packageRoot, 'package.json'),
@@ -93,14 +93,14 @@ describe('VersionUpdateManager', () => {
     })
 
     const status = await manager.check()
-    expect(status.components.find(component => component.id === 'dsh-mnemon')).toMatchObject({
+    expect(status.components.find(component => component.id === 'dsh-song-memory')).toMatchObject({
       installMode: 'npm',
       installProfile: 'web',
       installPath: profile,
     })
-    await expect(manager.update('dsh-mnemon')).resolves.toMatchObject({ updated: true, currentVersion: '0.1.3', restartRequired: true })
+    await expect(manager.update('dsh-song-memory')).resolves.toMatchObject({ updated: true, currentVersion: '0.1.3', restartRequired: true })
     expect(manager.currentDshMnemonVersion).toBe('0.1.3')
-    expect(run).toHaveBeenCalledWith(expect.stringMatching(/pnpm$/), ['update', 'dsh-mnemon'], expect.objectContaining({ timeoutMs: 600_000, maxOutputBytes: 16 * 1024 }))
+    expect(run).toHaveBeenCalledWith(expect.stringMatching(/pnpm$/), ['update', 'dsh-song-memory'], expect.objectContaining({ timeoutMs: 600_000, maxOutputBytes: 16 * 1024 }))
   })
 
   it('uses the fixed Homebrew cask command for a recognized Mnemon install', async () => {

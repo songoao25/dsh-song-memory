@@ -906,7 +906,7 @@ export interface MnemonPackImportResult {
   summary: MnemonPackComponentSummary[]
 }
 
-export type VersionComponentId = 'mnemon' | 'dsh-mnemon'
+export type VersionComponentId = 'mnemon' | 'dsh-song-memory'
 export type VersionInstallMode = 'homebrew' | 'go' | 'npm' | 'link' | 'manual' | 'missing'
 
 export interface VersionComponentStatus {

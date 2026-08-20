@@ -210,7 +210,7 @@ describe('MnemonView', () => {
         checkedAt: '2026-08-15T03:00:00.000Z',
         components: [
           { id: 'mnemon', name: 'Mnemon CLI', executablePath: '/usr/local/bin/mnemon', current: mnemonVersionUpdated ? '0.2.0' : '0.1.2', latest: '0.2.0', outdated: !mnemonVersionUpdated, installMode: 'homebrew', updateSupported: true, updateHint: 'brew' },
-          { id: 'dsh-mnemon', name: 'dsh-mnemon', installProfile: 'web', installPath: '/workspace/dsh-mnemon', current: '0.1.2', latest: '0.1.3', outdated: true, installMode: 'link', updateSupported: false, updateHint: 'link' },
+          { id: 'dsh-song-memory', name: 'dsh-song-memory', installProfile: 'web', installPath: '/workspace/dsh-song-memory', current: '0.1.2', latest: '0.1.3', outdated: true, installMode: 'link', updateSupported: false, updateHint: 'link' },
         ],
       } }
       if (endpoint === 'version-update') {
@@ -432,7 +432,7 @@ describe('MnemonView', () => {
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
     const engineStatus = await screen.findByRole('region', { name: 'song memory 运行状态' })
-    expect(within(engineStatus).getByText('dsh-mnemon 0.1.2')).toBeTruthy()
+    expect(within(engineStatus).getByText('dsh-song-memory 0.1.2')).toBeTruthy()
     expect(within(engineStatus).getByText('插件运行正常')).toBeTruthy()
     expect(screen.getByText('系统正常')).toBeTruthy()
     expect(screen.queryByText('song memory 不可用')).toBeNull()
@@ -545,15 +545,15 @@ describe('MnemonView', () => {
     const { connection, call } = createConnection()
     render(<MnemonView connection={connection} settingsScope={settingsScope} sessionId="session-1" surface="sidebar" />)
 
-    await waitFor(() => expect(screen.getByText('dsh-mnemon 0.1.2')).toBeTruthy())
+    await waitFor(() => expect(screen.getByText('dsh-song-memory 0.1.2')).toBeTruthy())
     fireEvent.click(screen.getByRole('button', { name: '检查版本' }))
     const dialog = screen.getByRole('dialog', { name: '检查与更新版本' })
     await waitFor(() => expect(within(dialog).getByText('Mnemon CLI')).toBeTruthy())
     expect(within(dialog).getByText('/usr/local/bin/mnemon')).toBeTruthy()
-    expect(within(dialog).getByText('dsh-mnemon')).toBeTruthy()
+    expect(within(dialog).getByText('dsh-song-memory')).toBeTruthy()
     expect(within(dialog).getByText('本地 Link')).toBeTruthy()
     expect(within(dialog).getByText('源码 · Profile web')).toBeTruthy()
-    expect(within(dialog).getByText('/workspace/dsh-mnemon')).toBeTruthy()
+    expect(within(dialog).getByText('/workspace/dsh-song-memory')).toBeTruthy()
     expect(within(dialog).getByText(/请在源码目录拉取并构建/)).toBeTruthy()
     expect(within(dialog).getAllByRole('button', { name: '更新' })).toHaveLength(1)
 
@@ -822,7 +822,7 @@ describe('MnemonView', () => {
     fireEvent.click(await screen.findByRole('tab', { name: '运行状态' }))
     expect(await screen.findByRole('heading', { name: '系统状态' })).toBeTruthy()
     expect(screen.getAllByRole('status', { name: '检查中…' })).toHaveLength(1)
-    expect(screen.getByText('dsh-mnemon 0.1.2')).toBeTruthy()
+    expect(screen.getByText('dsh-song-memory 0.1.2')).toBeTruthy()
     expect(screen.queryByText('连接需要检查')).toBeNull()
   })
 

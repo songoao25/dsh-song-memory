@@ -334,7 +334,7 @@ export function createWriteHandler(input: RuntimeInput, lifecycle?: MnemonLifecy
       if (endpoint === 'version-update') {
         if (versions === undefined) throw new Error('version updates are unavailable')
         const component = String(payload.component ?? '')
-        if (component !== 'mnemon' && component !== 'dsh-mnemon') return badRequest(`unknown version component: ${component}`)
+        if (component !== 'mnemon' && component !== 'dsh-song-memory') return badRequest(`unknown version component: ${component}`)
         return success(await versions.update(component as VersionComponentId))
       }
       const resolved = runtimeFor(input, payload, runtimeMemory)

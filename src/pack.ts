@@ -31,6 +31,15 @@ export const MNEMON_PACK_MIME = 'application/zip'
 export const MNEMON_PACK_MAX_ARCHIVE_BYTES = 48 * 1024 * 1024
 export const MNEMON_PACK_MAX_EXPANDED_BYTES = 256 * 1024 * 1024
 
+const PACKAGE_VERSION = (() => {
+  try {
+    const value: unknown = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+    return typeof value === 'object' && value !== null && 'version' in value && typeof value.version === 'string' ? value.version : '0.0.0'
+  } catch {
+    return '0.0.0'
+  }
+})()
+
 const MAX_FILE_BYTES = 128 * 1024 * 1024
 const MAX_FILES = 4096
 const LOCK_TIMEOUT_MS = 5_000
@@ -686,7 +695,7 @@ export class MnemonPackManager {
         const summary = summaryFor(components, payload)
         const manifest: MnemonPackManifest = {
           format: MNEMON_PACK_FORMAT, version: MNEMON_PACK_VERSION, scope, exportedAt,
-          source: { plugin: 'dsh-mnemon', pluginVersion: '0.1.0' }, components, summary,
+          source: { plugin: 'dsh-mnemon', pluginVersion: PACKAGE_VERSION }, components, summary,
         }
         const checksums: ChecksumFile = { algorithm: 'sha256', files: Object.fromEntries(Object.entries(payload).map(([path, bytes]) => [path, sha256(bytes)])) }
         const entries: Zippable = {

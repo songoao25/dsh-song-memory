@@ -32,7 +32,7 @@ export type {
   RecallQualityPolicyContext,
 } from './recall-quality/index.ts'
 
-export const name = 'dsh-mnemon'
+export const name = 'dsh-song-memory'
 // workspaceRegistry belongs to the Web profile. Core tools, lifecycle hooks,
 // and per-Agent cwd routing must also mount in profiles such as Headless.
 export const inject = ['tools', 'settings', 'commands', 'agents', 'subagents']
